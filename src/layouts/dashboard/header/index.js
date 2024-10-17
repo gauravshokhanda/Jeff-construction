@@ -6,13 +6,9 @@ import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 import { bgBlur } from '../../../utils/cssStyles';
 // components
 import Iconify from '../../../components/iconify';
-//
-import Searchbar from './Searchbar';
-import AccountPopover from './AccountPopover';
-import LanguagePopover from './LanguagePopover';
-import NotificationsPopover from './NotificationsPopover';
 
-// ----------------------------------------------------------------------
+import AccountPopover from './AccountPopover';
+import NotificationsPopover from './NotificationsPopover';
 
 const NAV_WIDTH = 280;
 

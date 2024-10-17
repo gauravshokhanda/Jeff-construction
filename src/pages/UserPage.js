@@ -1,9 +1,5 @@
-import React from 'react'
+import React from 'react';
 
-const UserPage = () => {
-  return (
-    <div>Maps</div>
-  )
-}
+const UserPage = () => <div>Maps</div>;
 
-export default UserPage
+export default UserPage;
