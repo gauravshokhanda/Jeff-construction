@@ -1,68 +1,66 @@
 import { useState } from 'react';
-// @mui
+import axios from 'axios';
 import { styled } from '@mui/material/styles';
-import { Input, Slide, Button, IconButton, InputAdornment, ClickAwayListener } from '@mui/material';
-// utils
-import { bgBlur } from '../../../utils/cssStyles';
-// component
+import { Input, Button, InputAdornment } from '@mui/material';
 import Iconify from '../../../components/iconify';
 
-// ----------------------------------------------------------------------
-
-const HEADER_MOBILE = 64;
-const HEADER_DESKTOP = 92;
-
 const StyledSearchbar = styled('div')(({ theme }) => ({
-  ...bgBlur({ color: theme.palette.background.default }),
-  top: 0,
-  left: 0,
-  zIndex: 99,
-  width: '100%',
   display: 'flex',
-  position: 'relative',
   alignItems: 'center',
-  height: HEADER_MOBILE,
   padding: theme.spacing(2),
-  boxShadow: theme.customShadows.z8,
-  borderRadius: '20px',
-  // border: `2px solid ${theme.palette.primary.main}`,
-  // marginTop: theme.spacing(5),
-  [theme.breakpoints.up('md')]: {
-    height: HEADER_DESKTOP,
-    padding: theme.spacing(0, 5),
-  },
-}
-));
+}));
 
-// ----------------------------------------------------------------------
+export default function Searchbar({ onLocationSearch }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-export default function Searchbar() {
-  const [open, setOpen] = useState(false);
+  const handleSearch = async () => {
+    if (!searchQuery) return;
 
-  const handleClose = () => {
-    setOpen(false);
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(searchQuery)}&key=AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w`
+      );
+      console.log("response",response.data)
+      console.log("response", response.error_message)
+
+      if (response.data.status === "OK") {
+        const { lat, lng } = response.data.results[0].geometry.location;
+        onLocationSearch([lat, lng]); 
+        setSearchQuery(''); 
+      } else {
+        setError('Location not found.'); // Set error message if location not found
+      }
+    } catch (error) {
+      console.error('Error fetching location:', error);
+      setError('Error fetching location. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-      <div>
-          <StyledSearchbar>
-            <Input
-              autoFocus
-              fullWidth
-              disableUnderline
-              placeholder="Search…"
-              startAdornment={
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-                </InputAdornment>
-              }
-              sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
-            />
-            <Button variant="contained" onClick={handleClose}>
-              Search
-            </Button>
-          </StyledSearchbar>
-      </div>
-    
+    <StyledSearchbar>
+      <Input
+        fullWidth
+        disableUnderline
+        placeholder="Search location..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        startAdornment={
+          <InputAdornment position="start">
+            <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+          </InputAdornment>
+        }
+      />
+      <Button variant="contained" onClick={handleSearch} disabled={loading}>
+        {loading ? "Searching..." : "Search"}
+      </Button>
+      {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error message */}
+    </StyledSearchbar>
   );
 }
