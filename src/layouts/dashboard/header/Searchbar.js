@@ -19,40 +19,32 @@ const StyledSearchbar = styled('div')(({ theme }) => ({
   zIndex: 99,
   width: '100%',
   display: 'flex',
-  position: 'absolute',
+  position: 'relative',
   alignItems: 'center',
   height: HEADER_MOBILE,
-  padding: theme.spacing(0, 3),
+  padding: theme.spacing(2),
   boxShadow: theme.customShadows.z8,
+  borderRadius: '20px',
+  // border: `2px solid ${theme.palette.primary.main}`,
+  // marginTop: theme.spacing(5),
   [theme.breakpoints.up('md')]: {
     height: HEADER_DESKTOP,
     padding: theme.spacing(0, 5),
   },
-}));
+}
+));
 
 // ----------------------------------------------------------------------
 
 export default function Searchbar() {
   const [open, setOpen] = useState(false);
 
-  const handleOpen = () => {
-    setOpen(!open);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
 
   return (
-    <ClickAwayListener onClickAway={handleClose}>
       <div>
-        {!open && (
-          <IconButton onClick={handleOpen}>
-            <Iconify icon="eva:search-fill" />
-          </IconButton>
-        )}
-
-        <Slide direction="down" in={open} mountOnEnter unmountOnExit>
           <StyledSearchbar>
             <Input
               autoFocus
@@ -70,8 +62,7 @@ export default function Searchbar() {
               Search
             </Button>
           </StyledSearchbar>
-        </Slide>
       </div>
-    </ClickAwayListener>
+    
   );
 }
