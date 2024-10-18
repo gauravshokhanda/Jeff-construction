@@ -6,9 +6,9 @@ import { Card, CardContent, Typography, Button, Container } from '@mui/material'
 const AreaCard = ({ area, onClose }) => (
         <Container sx={{
             position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            top: '30%',
+            right: '0', 
+            transform: 'translateY(-50%)', 
             zIndex: 1000,
             width: '300px',
         }}>
