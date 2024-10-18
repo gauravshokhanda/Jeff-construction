@@ -19,7 +19,8 @@ const AreaCard = ({ area, onClose }) => (
                     </Typography>
                     <Typography variant="body1">{area.toFixed(2)} m²</Typography>
                 </CardContent>
-                <Button variant="contained" color="primary" style={{ margin: '10px' }} onClick={onClose}>
+            <Button variant="outlined" color="primary" style={{marginLeft:'10px'}}>Continue</Button>
+            <Button variant="outlined" color="error" style={{ margin: '10px' }} onClick={onClose}>
                     Close
                 </Button>
             </Card>
