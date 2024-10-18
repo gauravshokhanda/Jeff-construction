@@ -10,6 +10,7 @@ const StyledSearchbar = styled('div')(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
+// eslint-disable-next-line react/prop-types
 export default function Searchbar({ onLocationSearch }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,15 +24,17 @@ export default function Searchbar({ onLocationSearch }) {
 
     try {
       const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(searchQuery)}&key=AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          searchQuery
+        )}&key=AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w`
       );
-      console.log("response",response.data)
-      console.log("response", response.error_message)
+      console.log('response', response.data);
+      console.log('response', response.error_message);
 
-      if (response.data.status === "OK") {
+      if (response.data.status === 'OK') {
         const { lat, lng } = response.data.results[0].geometry.location;
-        onLocationSearch([lat, lng]); 
-        setSearchQuery(''); 
+        onLocationSearch([lat, lng]);
+        setSearchQuery('');
       } else {
         setError('Location not found.'); // Set error message if location not found
       }
@@ -58,7 +61,7 @@ export default function Searchbar({ onLocationSearch }) {
         }
       />
       <Button variant="contained" onClick={handleSearch} disabled={loading}>
-        {loading ? "Searching..." : "Search"}
+        {loading ? 'Searching...' : 'Search'}
       </Button>
       {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error message */}
     </StyledSearchbar>

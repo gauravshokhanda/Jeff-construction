@@ -1,35 +1,33 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useTheme } from '@mui/material/styles';
-import { Container, Typography, Button, IconButton } from '@mui/material';
+import { Container, Typography, IconButton } from '@mui/material';
 import { GoogleMap, LoadScript, Marker, DrawingManager } from '@react-google-maps/api';
-import Searchbar from "../layouts/dashboard/header/Searchbar";
+import Searchbar from '../layouts/dashboard/header/Searchbar';
 import AreaCard from '../components/AreaCard/AreaCard';
 
 const mapContainerStyle = {
-  height: "500px",
-  width: "100%",
+  height: '500px',
+  width: '100%',
 };
 
 const center = {
-  lat: 29.4074203, 
+  lat: 29.4074203,
   lng: 78.4821406,
 };
 
 const calculatePolygonArea = (coordinates) => {
   const toRadians = (degrees) => (degrees * Math.PI) / 180;
-  const earthRadius = 6371000; 
+  const earthRadius = 6371000;
 
   const area = coordinates.reduce((acc, current, index) => {
     const nextIndex = (index + 1) % coordinates.length; // Calculate the next index in a circular manner
     const { lat: lat1, lng: lng1 } = current;
-    const { lat: lat2, lng: lng2 } = coordinates[nextIndex];
+    const { lat: lat2 } = coordinates[nextIndex];
 
     const φ1 = toRadians(lat1);
     const φ2 = toRadians(lat2);
-    const Δλ = toRadians(lng2 - lng1);
 
-    return acc + (lng1 * Math.PI / 180) * (Math.sin(φ2) - Math.sin(φ1)) * earthRadius * earthRadius / 2;
+    return acc + (((lng1 * Math.PI) / 180) * (Math.sin(φ2) - Math.sin(φ1)) * earthRadius * earthRadius) / 2;
   }, 0);
 
   return Math.abs(area);
@@ -39,18 +37,15 @@ const calculateRectangleArea = (bounds) => {
   const northEast = bounds.getNorthEast();
   const southWest = bounds.getSouthWest();
 
-  const width = Math.abs(northEast.lng() - southWest.lng()) * 111319; 
-  const height = Math.abs(northEast.lat() - southWest.lat()) * 110574; 
+  const width = Math.abs(northEast.lng() - southWest.lng()) * 111319;
+  const height = Math.abs(northEast.lat() - southWest.lat()) * 110574;
 
-  return width * height; 
+  return width * height;
 };
 
-const calculateCircleArea = (radius) => {
-  return Math.PI * (radius ** 2); 
-};
+const calculateCircleArea = (radius) => Math.PI * radius ** 2;
 const libraries = ['drawing'];
 export default function DashboardAppPage() {
-  const theme = useTheme();
   const [mapCenter, setMapCenter] = useState(center);
   const [zoom, setZoom] = useState(10);
   const [drawingPosition, setDrawingPosition] = useState(null);
@@ -59,12 +54,12 @@ export default function DashboardAppPage() {
   const [isAreaCardVisible, setIsAreaCardVisible] = useState(false);
 
   const handleLocationSearch = (coordinates) => {
-    setMapCenter({ lat: coordinates[0], lng: coordinates[1] }); 
+    setMapCenter({ lat: coordinates[0], lng: coordinates[1] });
     setZoom(13);
   };
   const clearPreviousShape = () => {
     if (currentShape) {
-      currentShape.setMap(null); 
+      currentShape.setMap(null);
       setCurrentShape(null);
     }
   };
@@ -75,7 +70,7 @@ export default function DashboardAppPage() {
     }
   };
   const handleAreaCardClose = () => {
-    setIsAreaCardVisible(false); 
+    setIsAreaCardVisible(false);
     currentShape.setMap(null);
     setCurrentShape(null);
   };
@@ -104,7 +99,7 @@ export default function DashboardAppPage() {
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back
+          Search Location
         </Typography>
 
         <Container maxWidth="xl" style={{ position: 'relative' }}>
@@ -122,8 +117,8 @@ export default function DashboardAppPage() {
               stroke="#000000"
               strokeWidth="0.0039571"
             >
-              <g id="SVGRepo_bgCarrier" strokeWidth="0"/>
-              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"/>
+              <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
               <g id="SVGRepo_iconCarrier">
                 <g>
                   <path d="M197.849,0C122.131,0,60.531,61.609,60.531,137.329c0,72.887,124.591,243.177,129.896,250.388l4.951,6.738 
@@ -135,7 +130,7 @@ export default function DashboardAppPage() {
             </svg>
           </IconButton>
 
-          
+
           {/* <Button onClick={handleMyLocationClick}>My Location</Button> */}
 
           <LoadScript googleMapsApiKey="AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w" libraries={libraries}>
@@ -152,7 +147,7 @@ export default function DashboardAppPage() {
                   options={{
                     drawingControl: true,
                     drawingControlOptions: {
-                      position: drawingPosition, 
+                      position: drawingPosition,
                       drawingModes: ['polygon', 'rectangle', 'circle'],
                     },
                   }}
@@ -165,7 +160,7 @@ export default function DashboardAppPage() {
 
                     if (e.type === 'polygon') {
                       const path = shape.getPath().getArray();
-                      const coordinates = path.map(latLng => ({
+                      const coordinates = path.map((latLng) => ({
                         lat: latLng.lat(),
                         lng: latLng.lng(),
                       }));
@@ -187,9 +182,7 @@ export default function DashboardAppPage() {
               )}
             </GoogleMap>
           </LoadScript>
-          {isAreaCardVisible && area && <AreaCard area={area} onClose={handleAreaCardClose} 
-        
-          />}
+          {isAreaCardVisible && area && <AreaCard area={area} onClose={handleAreaCardClose} />}
         </Container>
       </Container>
     </>

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+/* eslint-disable react/prop-types */
+import React from 'react';
 import { Card, CardContent, Typography, Button, Container } from '@mui/material';
 
-const AreaCard = ({ area, onClose }) => {
-    return (
+// eslint-disable-next-line react/prop-types
+const AreaCard = ({ area, onClose }) => (
         <Container sx={{
             position: 'absolute',
             top: '30%',
@@ -24,6 +25,5 @@ const AreaCard = ({ area, onClose }) => {
             </Card>
         </Container>
     );
-};
 
 export default AreaCard;
