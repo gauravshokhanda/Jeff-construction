@@ -17,6 +17,10 @@ import SignupPage from './pages/SignupPage';
 export default function Router() {
   const routes = useRoutes([
     {
+      path: '/',
+      element: <Navigate to="/login" replace />, // Redirect root to login
+    },
+    {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [

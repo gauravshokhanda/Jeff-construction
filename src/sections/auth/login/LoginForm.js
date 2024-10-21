@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Stack, TextField, Button, Alert } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../../../redux/Slices/authSlice';
 
 export default function LoginForm() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const error = useSelector(state => state.auth.error);
+  const user = useSelector(state => state.auth.user);
   const [formValues, setFormValues] = useState({
     email: '',
     password: '',
@@ -26,6 +29,12 @@ export default function LoginForm() {
     await dispatch(login(formValues));
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard'); 
+    }
+  }, [user, navigate]);
 
   return (
     <form onSubmit={handleSubmit}>

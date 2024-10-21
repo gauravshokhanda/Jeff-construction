@@ -1,8 +1,7 @@
 import React from 'react'
 import { Container, Typography,  Card, CardContent, Button } from '@mui/material'
 
-const CoordinatesForm = () => {
-  return (
+const CoordinatesForm = () => (
    <>
           <Container sx={{
               position: 'absolute',
@@ -27,6 +26,6 @@ const CoordinatesForm = () => {
           </Container>
    </>
   )
-}
+
 
 export default CoordinatesForm
