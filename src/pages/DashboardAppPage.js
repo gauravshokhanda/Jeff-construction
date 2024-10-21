@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Container, Typography, IconButton, Button } from '@mui/material';
+import { Container, Typography, IconButton } from '@mui/material';
 import { GoogleMap, LoadScript, Marker, DrawingManager } from '@react-google-maps/api';
 import Searchbar from '../layouts/dashboard/header/Searchbar';
 import AreaCard from '../components/DashboardUtils/AreaCard';
