@@ -1,15 +1,13 @@
-// component
-import SvgColor from '../../../components/svg-color';
+// import SvgColor from '../../../components/svg-color';
 
-// ----------------------------------------------------------------------
 
-const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
+// const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
 
 const navConfig = [
   {
     title: 'Search Address',
     path: '/dashboard/app',
-    icon: icon('ic_analytics'),
+    // icon: icon('ic_analytics'),
   },
   {
     title: 'Maps',
@@ -28,6 +26,10 @@ const navConfig = [
   },
   {
     title: 'Calulation',
+    path:"/dashboard/calulation"
+  },
+  {
+    title: 'Login',
     path: '/login',
     // icon: icon('ic_lock'),
   },

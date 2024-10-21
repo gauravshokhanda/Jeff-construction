@@ -3,9 +3,10 @@ import { Helmet } from 'react-helmet-async';
 import { Container, Typography, IconButton } from '@mui/material';
 import { GoogleMap, LoadScript, Marker, DrawingManager } from '@react-google-maps/api';
 import Searchbar from '../layouts/dashboard/header/Searchbar';
-import AreaCard from '../components/AreaCard/AreaCard';
+import AreaCard from '../components/DashboardUtils/AreaCard';
+import CoordinatesForm from '../components/DashboardUtils/CoordinatesForm';
 
-const mapContainerStyle = {
+const mapContainerStyle = { 
   height: '500px',
   width: '100%',
 };
@@ -52,6 +53,7 @@ export default function DashboardAppPage() {
   const [currentShape, setCurrentShape] = useState(null);
   const [area, setArea] = useState(null);
   const [isAreaCardVisible, setIsAreaCardVisible] = useState(false);
+  const [showCoordinatesForm, setShowCoordinatesForm] = useState(false);
 
   const handleLocationSearch = (coordinates) => {
     setMapCenter({ lat: coordinates[0], lng: coordinates[1] });
@@ -130,8 +132,9 @@ export default function DashboardAppPage() {
             </svg>
           </IconButton>
 
+         
 
-          {/* <Button onClick={handleMyLocationClick}>My Location</Button> */}
+          {showCoordinatesForm && <CoordinatesForm />}
 
           <LoadScript googleMapsApiKey="AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w" libraries={libraries}>
             <GoogleMap

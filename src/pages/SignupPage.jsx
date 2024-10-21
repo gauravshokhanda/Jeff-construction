@@ -1,14 +1,15 @@
 import { Helmet } from 'react-helmet-async';
 
 import { styled } from '@mui/material/styles';
-import { useSelector } from 'react-redux';
-import { Link, Container, Typography,  } from '@mui/material';
+import { Link, Container, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 import useResponsive from '../hooks/useResponsive';
 
 import Logo from '../components/logo';
-import { LoginForm } from '../sections/auth/login';
+import SignUpForm from '../sections/auth/Signup/SignUpForm';
+
+
 
 const StyledRoot = styled('div')(({ theme }) => ({
     [theme.breakpoints.up('md')]: {
@@ -39,13 +40,12 @@ const StyledContent = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function LoginPage() {
-    const user = useSelector((userValues) => userValues.auth.user)
     const mdUp = useResponsive('up', 'md');
 
     return (
         <>
             <Helmet>
-                <title> Login  </title>
+                <title> Sign up  </title>
             </Helmet>
 
             <StyledRoot>
@@ -60,7 +60,7 @@ export default function LoginPage() {
                 {mdUp && (
                     <StyledSection>
                         <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-                            {user ? (<h2>Welcome, {user.name}!</h2>) : (<h2>Please Login</h2>)}
+                            Hi, Welcome Back    
                         </Typography>
                         <img src="/assets/illustrations/illustration_login.png" alt="login" />
                     </StyledSection>
@@ -69,18 +69,17 @@ export default function LoginPage() {
                 <Container maxWidth="sm">
                     <StyledContent>
                         <Typography variant="h4" gutterBottom>
-                            Sign in to Minimal
+                            Sign Up
                         </Typography>
 
                         <Typography variant="body2" sx={{ mb: 5 }}>
-                            Don’t have an account? {''}
-                            <Link variant="subtitle2" component={RouterLink} to="/signup">
-                                Sign Up
+                            Already have an account?{' '}
+                            <Link variant="subtitle2" component={RouterLink} to="/login">
+                                Sign In
                             </Link>
                         </Typography>
-
-
-                        <LoginForm />
+                       
+                        <SignUpForm />
                     </StyledContent>
                 </Container>
             </StyledRoot>
