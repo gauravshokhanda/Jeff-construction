@@ -3,30 +3,41 @@ import {
     Box,
     Button,
     TextField,
-    FormControlLabel,
-    Checkbox,
     Typography,
 } from "@mui/material";
 
-const PropertyForm = () => {
+const ThreeDPropertyForm = () => {
     const [formData, setFormData] = useState({
         width: "",
         length: "",
         area: "",
         laborCharge: "",
-        clubHouse: false,
-        garden: false,
-        swimmingPool: false,
-        carParking: false,
-        gym: false,
+        amenities: {
+            clubHouse: "",
+            garden: "",
+            swimmingPool: "",
+            carParking: "",
+            gym: "",
+        },
         image: null,
     });
 
     const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: type === "checkbox" ? checked : value,
+            [name]: value,
+        }));
+    };
+
+    const handleAmenityChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            amenities: {
+                ...prevData.amenities,
+                [name]: value,
+            },
         }));
     };
 
@@ -50,7 +61,7 @@ const PropertyForm = () => {
             sx={{ maxWidth: "600px", margin: "0 auto", padding: "16px" }}
         >
             <Typography variant="h5" gutterBottom>
-                Property Details Form
+                Property Details Form in 2D
             </Typography>
 
             {/* Image Upload */}
@@ -109,64 +120,50 @@ const PropertyForm = () => {
                 sx={{ marginBottom: "16px" }}
             />
 
-            {/* Amenities */}
-            <Typography variant="h6" gutterBottom>
-                Amenities
-            </Typography>
 
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        name="clubHouse"
-                        checked={formData.clubHouse}
-                        onChange={handleInputChange}
-                    />
-                }
+            <TextField
+                fullWidth
                 label="Club House"
+                name="clubHouse"
+                value={formData.amenities.clubHouse}
+                onChange={handleAmenityChange}
+                sx={{ marginBottom: "16px" }}
             />
 
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        name="garden"
-                        checked={formData.garden}
-                        onChange={handleInputChange}
-                    />
-                }
+            <TextField
+                fullWidth
                 label="Garden"
+                name="garden"
+                value={formData.amenities.garden}
+                onChange={handleAmenityChange}
+                sx={{ marginBottom: "16px" }}
             />
 
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        name="swimmingPool"
-                        checked={formData.swimmingPool}
-                        onChange={handleInputChange}
-                    />
-                }
+            <TextField
+                fullWidth
                 label="Swimming Pool"
+                name="swimmingPool"
+                value={formData.amenities.swimmingPool}
+                onChange={handleAmenityChange}
+                sx={{ marginBottom: "16px" }}
             />
 
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        name="carParking"
-                        checked={formData.carParking}
-                        onChange={handleInputChange}
-                    />
-                }
+            <TextField
+                fullWidth
                 label="Car Parking"
+                name="carParking"
+                value={formData.amenities.carParking}
+                onChange={handleAmenityChange}
+                sx={{ marginBottom: "16px" }}
             />
 
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        name="gym"
-                        checked={formData.gym}
-                        onChange={handleInputChange}
-                    />
-                }
+            <TextField
+                fullWidth
                 label="Gym"
+                name="gym"
+                value={formData.amenities.gym}
+                onChange={handleAmenityChange}
+                sx={{ marginBottom: "16px" }}
             />
 
             {/* Submit Button */}
@@ -185,5 +182,4 @@ const PropertyForm = () => {
     );
 };
 
-export default PropertyForm;
-
+export default ThreeDPropertyForm;
