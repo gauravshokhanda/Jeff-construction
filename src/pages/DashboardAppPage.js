@@ -141,6 +141,7 @@ export default function DashboardAppPage() {
               mapContainerStyle={mapContainerStyle}
               center={mapCenter}
               zoom={zoom}
+              mapTypeId="satellite"
               onLoad={onMapLoad} // Add onLoad prop
             >
               <Marker position={mapCenter} />

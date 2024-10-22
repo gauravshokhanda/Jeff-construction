@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; 
 import authReducer from "./Slices/authSlice"; 
 import areaReducer from "./Slices/areaSlice";
+import CalculationReducer from "./Slices/CalculationSlice"
 
 const persistConfig = {
     key: 'auth',
@@ -15,7 +16,8 @@ const persistedReducer = persistReducer(persistConfig, authReducer);
 export const store = configureStore({
     reducer: {
         auth: persistedReducer,
-        area:areaReducer
+        area:areaReducer,
+        Calculationform: CalculationReducer,
     },
 });
 

@@ -1,6 +1,4 @@
-// -----------------
 import React, { useState } from "react";
-
 import {
     Box,
     Button,
@@ -9,24 +7,21 @@ import {
     Checkbox,
     Typography,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { setCalculateData } from "../redux/Slices/CalculationSlice";
-// ----------------------------------------------------------
-const Calculation = () => {
+
+const PropertyForm = () => {
     const [formData, setFormData] = useState({
-        width: '',
-        length: '',
-        area: '',
-        laborCharge: '',
+        width: "",
+        length: "",
+        area: "",
+        laborCharge: "",
         clubHouse: false,
         garden: false,
         swimmingPool: false,
         carParking: false,
         gym: false,
         image: null,
-    })
-    const dispatch = useDispatch();
-    // const formData = useSelector((state) => state.Calculationform || {});
+    });
+
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData((prevData) => ({
@@ -44,20 +39,8 @@ const Calculation = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(setCalculateData(formData))
-        console.log("Form Submitted:", formData);
-        setFormData({
-            width: '',
-            length: '',
-            area: '',
-            laborCharge: '',
-            clubHouse: false,
-            garden: false,
-            swimmingPool: false,
-            carParking: false,
-            gym: false,
-            image: null,
-        });
+        // Handle form submission (e.g., send to backend API)
+        console.log(formData);
     };
 
     return (
@@ -91,7 +74,7 @@ const Calculation = () => {
                 fullWidth
                 label="Width"
                 name="width"
-                value={formData.width || ''}
+                value={formData.width}
                 onChange={handleInputChange}
                 sx={{ marginBottom: "16px" }}
             />
@@ -101,7 +84,7 @@ const Calculation = () => {
                 fullWidth
                 label="Length"
                 name="length"
-                value={formData.length || ''}
+                value={formData.length}
                 onChange={handleInputChange}
                 sx={{ marginBottom: "16px" }}
             />
@@ -111,7 +94,7 @@ const Calculation = () => {
                 fullWidth
                 label="Area"
                 name="area"
-                value={formData.area || ''}
+                value={formData.area}
                 onChange={handleInputChange}
                 sx={{ marginBottom: "16px" }}
             />
@@ -121,7 +104,7 @@ const Calculation = () => {
                 fullWidth
                 label="Labour Charge"
                 name="laborCharge"
-                value={formData.laborCharge || ''}
+                value={formData.laborCharge}
                 onChange={handleInputChange}
                 sx={{ marginBottom: "16px" }}
             />
@@ -135,7 +118,7 @@ const Calculation = () => {
                 control={
                     <Checkbox
                         name="clubHouse"
-                        checked={formData.clubHouse || ''}
+                        checked={formData.clubHouse}
                         onChange={handleInputChange}
                     />
                 }
@@ -202,5 +185,5 @@ const Calculation = () => {
     );
 };
 
-export default Calculation;
+export default PropertyForm;
 
