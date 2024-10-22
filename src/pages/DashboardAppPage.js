@@ -134,7 +134,7 @@ export default function DashboardAppPage() {
 
          
 
-          {showCoordinatesForm && <CoordinatesForm />}
+          {showCoordinatesForm && <CoordinatesForm setShowCoordinatesForm={setShowCoordinatesForm}/>}
 
           <LoadScript googleMapsApiKey="AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w" libraries={libraries}>
             <GoogleMap
@@ -179,7 +179,7 @@ export default function DashboardAppPage() {
 
                     if (calculatedArea) {
                       setArea(calculatedArea);
-                      setIsAreaCardVisible(true); // Show AreaCard with area information
+                      setIsAreaCardVisible(true); 
                     }
                   }}
                 />
