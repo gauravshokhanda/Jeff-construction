@@ -18,13 +18,13 @@ export default function Router() {
   const routes = useRoutes([
     {
       path: '/',
-      element: <Navigate to="/login" replace />, // Redirect root to login
+      element: <Navigate to="/login"  />, 
     },
     {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to="/dashboard/app" />, index:true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'TwoD', element: < TwoD /> },
@@ -43,7 +43,7 @@ export default function Router() {
     {
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to="/dashboard/app" />,  },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
