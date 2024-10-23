@@ -16,12 +16,12 @@ const navConfig = [
   },
   {
     title: '2d ',
-    path: '/dashboard/products',
+    path: '/dashboard/TwoD',
     // icon: icon('ic_cart'),
   },
   {
     title: '3d',
-    path: '/dashboard/blog',
+    path: '/dashboard/ThreeD',
     // icon: icon('ic_blog'),
   },
   {

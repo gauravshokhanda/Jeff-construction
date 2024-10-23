@@ -5,10 +5,8 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { setCalculateData } from "../redux/Slices/CalculationSlice";
 
-const Calculation = () => {
+const TwoDPropertyForm = () => {
     const [formData, setFormData] = useState({
         width: "",
         length: "",
@@ -23,7 +21,6 @@ const Calculation = () => {
         },
         image: null,
     });
-    const dispatch = useDispatch();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -53,21 +50,8 @@ const Calculation = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(setCalculateData(formData))
-        setFormData({
-            width: "",
-            length: "",
-            area: "",
-            laborCharge: "",
-            amenities: {
-                clubHouse: "",
-                garden: "",
-                swimmingPool: "",
-                carParking: "",
-                gym: "",
-            },
-            image: null,
-        })
+        // Handle form submission (e.g., send to backend API)
+        console.log(formData);
     };
 
     return (
@@ -198,4 +182,4 @@ const Calculation = () => {
     );
 };
 
-export default Calculation;
+export default TwoDPropertyForm;
