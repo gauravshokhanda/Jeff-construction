@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
 import { Input, Button, InputAdornment } from '@mui/material';
+import PropTypes from 'prop-types';
 import Iconify from '../../../components/iconify';
 
 const StyledSearchbar = styled('div')(({ theme }) => ({
@@ -15,32 +16,50 @@ export default function Searchbar({ onLocationSearch }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Function to check if the search query is coordinates
+  const isCoordinates = (query) => {
+    const regex = /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/;
+    return regex.test(query.trim());
+  };
+
   const handleSearch = async () => {
     if (!searchQuery) return;
 
     setLoading(true);
     setError('');
 
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(searchQuery)}&key=AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w`
-      );
-      console.log("response",response.data)
-      console.log("response", response.error_message)
-
-      if (response.data.status === "OK") {
-        const { lat, lng } = response.data.results[0].geometry.location;
-        onLocationSearch([lat, lng]); 
-        setSearchQuery(''); 
+    if (isCoordinates(searchQuery)) {
+      // If the input is coordinates, split them and pass to the map
+      const [lat, lng] = searchQuery.split(',').map(Number);
+      if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+        onLocationSearch([lat, lng]);
+        setSearchQuery('');
       } else {
-        setError('Location not found.'); // Set error message if location not found
+        setError('Invalid coordinates format.');
       }
-    } catch (error) {
-      console.error('Error fetching location:', error);
-      setError('Error fetching location. Please try again.');
-    } finally {
-      setLoading(false);
+    } else {
+      // Handle the location name search (existing functionality)
+      try {
+        const response = await axios.get(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            searchQuery
+          )}&key=AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w`
+        );
+
+        if (response.data.status === 'OK') {
+          const { lat, lng } = response.data.results[0].geometry.location;
+          onLocationSearch([lat, lng]);
+          setSearchQuery('');
+        } else {
+          setError('Location not found.');
+        }
+      } catch (error) {
+        console.error('Error fetching location:', error);
+        setError('Error fetching location. Please try again.');
+      }
     }
+
+    setLoading(false);
   };
 
   return (
@@ -48,7 +67,7 @@ export default function Searchbar({ onLocationSearch }) {
       <Input
         fullWidth
         disableUnderline
-        placeholder="Search location..."
+        placeholder="Search location or enter coordinates (e.g., latitude, longitude)"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         startAdornment={
@@ -58,9 +77,13 @@ export default function Searchbar({ onLocationSearch }) {
         }
       />
       <Button variant="contained" onClick={handleSearch} disabled={loading}>
-        {loading ? "Searching..." : "Search"}
+        {loading ? 'Searching...' : 'Search'}
       </Button>
-      {error && <div style={{ color: 'red' }}>{error}</div>} {/* Display error message */}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
     </StyledSearchbar>
   );
 }
+
+Searchbar.propTypes = {
+  onLocationSearch: PropTypes.func.isRequired,
+};

@@ -1,53 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Stack, TextField, Button, Alert } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-// @mui
-import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-// components
-import Iconify from '../../../components/iconify';
-
-// ----------------------------------------------------------------------
+import { login } from '../../../redux/Slices/authSlice';
 
 export default function LoginForm() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { error, isAuthenticated } = useSelector((state) => state.auth); // get isAuthenticated flag from the auth state
+  const [formValues, setFormValues] = useState({
+    email: '',
+    password: '',
+  });
+  const [loading, setLoading] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false);
+  // If the user is already authenticated, redirect to the dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard'); // Prevent access to login page if already authenticated
+    }
+  }, [isAuthenticated, navigate]);
 
-  const handleClick = () => {
-    navigate('/dashboard', { replace: true });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    dispatch(login(formValues)).then((result) => {
+      setLoading(false);
+      if (result.meta.requestStatus === 'fulfilled') {
+        navigate('/dashboard'); // Navigate to dashboard on successful login
+      }
+    });
   };
 
   return (
-    <>
+    <form onSubmit={handleSubmit}>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
-
+        {error && <Alert severity="error">{error}</Alert>}
+        <TextField
+          name="email"
+          label="Email"
+          type="email"
+          value={formValues.email}
+          onChange={handleChange}
+          required
+        />
         <TextField
           name="password"
           label="Password"
-          type={showPassword ? 'text' : 'password'}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
+          type="password"
+          value={formValues.password}
+          onChange={handleChange}
+          required
         />
+        <Button fullWidth size="large" type="submit" variant="contained" disabled={loading}>
+          {loading ? 'Logging in...' : 'Log In'}
+        </Button>
       </Stack>
-
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <Checkbox name="remember" label="Remember me" />
-        <Link variant="subtitle2" underline="hover">
-          Forgot password?
-        </Link>
-      </Stack>
-
-      <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
-        Login
-      </LoadingButton>
-    </>
+    </form>
   );
 }
