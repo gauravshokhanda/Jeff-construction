@@ -42,6 +42,7 @@
     "@emotion/styled": "^11.10.6",
     "@faker-js/faker": "^7.6.0",
     "@iconify/react": "^4.1.0",
+    "@mui/icons-material": "^6.1.5",
     "@mui/lab": "^6.0.0-beta.12",
     "@mui/material": "^6.1.4",
     "@react-google-maps/api": "^2.20.3",

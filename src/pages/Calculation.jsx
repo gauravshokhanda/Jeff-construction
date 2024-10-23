@@ -1,201 +1,155 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
-    Box,
-    Button,
-    TextField,
-    Typography,
-} from "@mui/material";
-import { useDispatch } from "react-redux";
-import { setCalculateData } from "../redux/Slices/CalculationSlice";
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox,
+     IconButton, Button, TextField,  Box, 
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import AddCalculationModal from '../components/CalculationsUtils/AddCalculationModal';
+// import EditCalculationModal from '../components/CalculationsUtils/EditCalculationModal';
 
-const Calculation = () => {
-    const [formData, setFormData] = useState({
-        width: "",
-        length: "",
-        area: "",
-        laborCharge: "",
-        amenities: {
-            clubHouse: "",
-            garden: "",
-            swimmingPool: "",
-            carParking: "",
-            gym: "",
-        },
-        image: null,
-    });
-    const dispatch = useDispatch();
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+const InvoiceTable = () => {
+    const [getData, setGetData] = useState([]);
+    const [deleteData, setDeleteData] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+
+    useEffect(()=>{
+        const handleCalculation = async () => {
+            try {
+                const response = await axios.get('http://3.111.47.151:5000/api/calculations/all',{
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                setGetData(response.data)    
+            } catch (error) {
+                console.error('Error fetching the data:', error);
+            }
+        };
+        handleCalculation();
+    }, [deleteData, openModal])
+
+    const deleteHandler = async (id) => {
+        try {
+            const response = await axios.delete(`http://3.111.47.151:5000/api/calculations/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            setDeleteData(true)
+        } catch (error) {
+            console.error('Error deleting the data:', error);
+        }
     };
 
-    const handleAmenityChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            amenities: {
-                ...prevData.amenities,
-                [name]: value,
-            },
-        }));
+
+    const handleOpenModal = () => {
+        setOpenModal(true); 
     };
 
-    const handleImageUpload = (e) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            image: e.target.files[0],
-        }));
+    const handleCloseModal = () => {
+        setOpenModal(false); 
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        dispatch(setCalculateData(formData))
-        setFormData({
-            width: "",
-            length: "",
-            area: "",
-            laborCharge: "",
-            amenities: {
-                clubHouse: "",
-                garden: "",
-                swimmingPool: "",
-                carParking: "",
-                gym: "",
-            },
-            image: null,
-        })
+
+
+
+
+    const handleSave = async (formData) => {
+        try {
+            const response = await axios.post('http://3.111.47.151:5000/api/calculations/add', formData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status === 201) {
+                console.log('Calculation added successfully:', response.data);
+                setDeleteData((prev) => !prev);
+            }
+        } catch (error) {
+            console.error('Error saving calculation:', error);
+        }
     };
+
 
     return (
-        <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ maxWidth: "600px", margin: "0 auto", padding: "16px" }}
-        >
-            <Typography variant="h5" gutterBottom>
-                Property Details Form in 2D
-            </Typography>
+        <Box sx={{ padding: 2 }}>
+            <Box sx={{
+                display:'flex',
+                justifyContent: 'space-between',
+             }}>
 
-            {/* Image Upload */}
-            <Button variant="outlined" component="label" sx={{ marginBottom: "16px" }}>
-                Upload Image
-                <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={handleImageUpload}
-                />
+            
+                <Button variant="contained" color="primary" sx={{ marginBottom: 2 }} onClick={handleOpenModal}>
+                Calculation
             </Button>
-            {formData.image && (
-                <Typography variant="body2">
-                    Selected File: {formData.image.name}
-                </Typography>
-            )}
-
-            {/* Width */}
-            <TextField
-                fullWidth
-                label="Width"
-                name="width"
-                value={formData.width}
-                onChange={handleInputChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            {/* Length */}
-            <TextField
-                fullWidth
-                label="Length"
-                name="length"
-                value={formData.length}
-                onChange={handleInputChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            {/* Area */}
-            <TextField
-                fullWidth
-                label="Area"
-                name="area"
-                value={formData.area}
-                onChange={handleInputChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            {/* Labour Charge */}
-            <TextField
-                fullWidth
-                label="Labour Charge"
-                name="laborCharge"
-                value={formData.laborCharge}
-                onChange={handleInputChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
 
             <TextField
-                fullWidth
-                label="Club House"
-                name="clubHouse"
-                value={formData.amenities.clubHouse}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
+                label="Search"
+                variant="outlined"
+                size="small"
+                sx={{ marginRight: 1 }}
             />
-
-            <TextField
-                fullWidth
-                label="Garden"
-                name="garden"
-                value={formData.amenities.garden}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            <TextField
-                fullWidth
-                label="Swimming Pool"
-                name="swimmingPool"
-                value={formData.amenities.swimmingPool}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            <TextField
-                fullWidth
-                label="Car Parking"
-                name="carParking"
-                value={formData.amenities.carParking}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            <TextField
-                fullWidth
-                label="Gym"
-                name="gym"
-                value={formData.amenities.gym}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            {/* Submit Button */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: 2,
-                }}
-            >
-                <Button variant="contained" color="primary" type="submit">
-                    Submit
-                </Button>
             </Box>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell><Checkbox /></TableCell>
+                            <TableCell>S.No.</TableCell>
+                         
+                            <TableCell>Width</TableCell>
+                            <TableCell>Length</TableCell>
+                            <TableCell>Area</TableCell>
+                            <TableCell>LabourCharge</TableCell>
+                            <TableCell>ClubhousePercentage</TableCell>
+                            <TableCell>GardenPercentage</TableCell>
+                            <TableCell>SwimmingPoolPercentage</TableCell>
+                            <TableCell>CarParkingPercentage</TableCell>
+                            <TableCell>GymPercentage</TableCell>
+                            <TableCell>Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                       
+                        {getData && getData.length > 0 ? (
+                            getData.map((item, index) => (
+                                <TableRow key={index}>
+                                    <TableCell><Checkbox /></TableCell>
+                                    <TableCell>{index + 1}</TableCell> 
+                                    
+                                    <TableCell>{item.width}</TableCell>
+                                    <TableCell>{item.length}</TableCell>
+                                    <TableCell>{item.area}</TableCell>
+                                    <TableCell>{item.labourCharge}</TableCell>
+                                    <TableCell>{item.clubhousePercentage}</TableCell>
+                                    <TableCell>{item.gardenPercentage}</TableCell>
+                                    <TableCell>{item.swimmingPoolPercentage}</TableCell>
+                                    <TableCell>{item.carParkingPercentage}</TableCell>
+                                    <TableCell>{item.gymPercentage}</TableCell>
+                                    <TableCell sx={{display:'flex'}}>
+                                        <IconButton onClick={() => deleteHandler(item._id)}><DeleteIcon /></IconButton>
+                                        <IconButton><EditIcon /></IconButton>
+                                        
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={11} align="center">
+                                    No data found
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            
+            <AddCalculationModal openModal={openModal} closeModal={handleCloseModal} onSave={handleSave} />
         </Box>
     );
 };
 
-export default Calculation;
+export default InvoiceTable;
