@@ -5,7 +5,8 @@ import {
      IconButton, Button, TextField,  Box, 
 } from '@mui/material';
 // eslint-disable-next-line import/no-unresolved
-import { EditIcon} from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
+
 import AddCalculationModal from '../components/CalculationsUtils/AddCalculationModal';
 // import EditCalculationModal from '../components/CalculationsUtils/EditCalculationModal';
 
