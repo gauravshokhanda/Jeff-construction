@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import CustomTextField from '../../layouts/dashboard/CustomComponent/CustomTextField ';
 
+// eslint-disable-next-line react/prop-types
 const EditCalculationModal = ({ openModal, closeModal, onSave }) => {
     const [formData, setFormData] = useState({
         width: '',

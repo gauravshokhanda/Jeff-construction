@@ -2,8 +2,8 @@
 import React from 'react';
 import { TextField } from '@mui/material';
 
-const CustomTextField = ({ label, name, value, onChange, required }) => {
-    return (
+// eslint-disable-next-line react/prop-types
+const CustomTextField = ({ label, name, value, onChange, required }) => (
         <TextField
             label={label}
             name={name}
@@ -14,7 +14,6 @@ const CustomTextField = ({ label, name, value, onChange, required }) => {
             required={required}
         />
     );
-};
 
 export default CustomTextField;
 
