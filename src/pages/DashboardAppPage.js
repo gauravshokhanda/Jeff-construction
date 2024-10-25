@@ -142,11 +142,11 @@ export default function DashboardAppPage() {
               center={mapCenter}
               zoom={zoom}
               mapTypeId="satellite"
-              onLoad={onMapLoad} // Add onLoad prop
+              onLoad={onMapLoad} 
             >
               <Marker position={mapCenter} />
 
-              {drawingPosition && ( // Render DrawingManager only if drawingPosition is set
+              {drawingPosition && ( 
                 <DrawingManager
                   options={{
                     drawingControl: true,

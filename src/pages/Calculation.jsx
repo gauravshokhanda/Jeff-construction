@@ -8,13 +8,16 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 
 import AddCalculationModal from '../components/CalculationsUtils/AddCalculationModal';
-// import EditCalculationModal from '../components/CalculationsUtils/EditCalculationModal';
+import EditCalculationModal from '../components/CalculationsUtils/EditCalculationModal';
 
 
 const InvoiceTable = () => {
     const [getData, setGetData] = useState([]);
     const [deleteData, setDeleteData] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+    const [OpenEditModal, setOpenEditModal] = useState(false);
+    const [editData, setEditData] = useState(null);
+
 
     useEffect(()=>{
         const handleCalculation = async () => {
@@ -24,13 +27,14 @@ const InvoiceTable = () => {
                         'Content-Type': 'application/json'
                     }
                 });
+                console.log(response.data)
                 setGetData(response.data)    
             } catch (error) {
                 console.error('Error fetching the data:', error);
             }
         };
         handleCalculation();
-    }, [deleteData, openModal])
+    }, [deleteData, openModal, OpenEditModal])
 
     // const deleteHandler = async (id) => {
     //     try {
@@ -54,7 +58,20 @@ const InvoiceTable = () => {
         setOpenModal(false); 
     };
 
+    const handleOpenEditModal = async (id) => {
+        
+        try {
+            const response = await axios.get(`http://3.111.47.151:5000/api/calculations/${id}`); 
+            setOpenEditModal(true);
+            setEditData(response.data)
+        } catch (error) {
+            console.error('Error fetching the data for editing:', error);
+        }
+    };
 
+    const handleCloseEditModal = () => {
+        setOpenEditModal(false);
+    };
 
 
 
@@ -97,10 +114,10 @@ const InvoiceTable = () => {
             <TableContainer>
                 <Table>
                     <TableHead>
-                        <TableRow>
+                        <TableRow >
                             <TableCell><Checkbox /></TableCell>
                             <TableCell>S.No.</TableCell>
-                         
+                            <TableCell>Name</TableCell>
                             <TableCell>Width</TableCell>
                             <TableCell>Length</TableCell>
                             <TableCell>Area</TableCell>
@@ -120,7 +137,7 @@ const InvoiceTable = () => {
                                 <TableRow key={index}>
                                     <TableCell><Checkbox /></TableCell>
                                     <TableCell>{index + 1}</TableCell> 
-                                    
+                                    <TableCell>{item.name}</TableCell> 
                                     <TableCell>{item.width}</TableCell>
                                     <TableCell>{item.length}</TableCell>
                                     <TableCell>{item.area}</TableCell>
@@ -131,8 +148,10 @@ const InvoiceTable = () => {
                                     <TableCell>{item.carParkingPercentage}</TableCell>
                                     <TableCell>{item.gymPercentage}</TableCell>
                                     <TableCell sx={{display:'flex'}}>
-                                        {/* <IconButton onClick={() => deleteHandler(item._id)}><DeleteIcon /></IconButton> */}
-                                        <IconButton><EditIcon /></IconButton>
+
+                                        <IconButton onClick={() => deleteHandler(item._id)}><DeleteIcon /></IconButton>
+                                        <IconButton onClick={() => handleOpenEditModal(item._id)}><EditIcon /></IconButton>
+
                                         
                                     </TableCell>
                                 </TableRow>
@@ -149,6 +168,11 @@ const InvoiceTable = () => {
             </TableContainer>
             
             <AddCalculationModal openModal={openModal} closeModal={handleCloseModal} onSave={handleSave} />
+            <EditCalculationModal openEditModal={OpenEditModal} 
+            closeEditModal={handleCloseEditModal}
+                editData={editData}
+            />
+            
         </Box>
     );
 };
