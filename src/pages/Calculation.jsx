@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 // eslint-disable-next-line import/no-unresolved
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete'
 
 import AddCalculationModal from '../components/CalculationsUtils/AddCalculationModal';
 import EditCalculationModal from '../components/CalculationsUtils/EditCalculationModal';
@@ -36,18 +37,18 @@ const InvoiceTable = () => {
         handleCalculation();
     }, [deleteData, openModal, OpenEditModal])
 
-    // const deleteHandler = async (id) => {
-    //     try {
-    //         const response = await axios.delete(`http://3.111.47.151:5000/api/calculations/${id}`, {
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //         setDeleteData(true)
-    //     } catch (error) {
-    //         console.error('Error deleting the data:', error);
-    //     }
-    // };
+    const deleteHandler = async (id) => {
+        try {
+            const response = await axios.delete(`http://3.111.47.151:5000/api/calculations/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            setDeleteData(true)
+        } catch (error) {
+            console.error('Error deleting the data:', error);
+        }
+    };
 
 
     const handleOpenModal = () => {
