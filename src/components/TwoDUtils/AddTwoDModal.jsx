@@ -12,7 +12,7 @@ import {
     MenuItem,
     Select,
     FormControl,
-    InputLabel,
+  
     Typography,
 } from '@mui/material';
 
@@ -25,7 +25,6 @@ const AddTwoDModal = ({ openModal, closeModal, onSave }) => {
     const [calculations, setCalculations] = useState([]);
 
     useEffect(() => {
-
         const fetchCalculations = async () => {
             try {
                 const response = await axios.get('http://3.111.47.151:5000/api/calculations/all', {
@@ -55,23 +54,24 @@ const AddTwoDModal = ({ openModal, closeModal, onSave }) => {
             ...formData,
             image: e.target.files[0]
         });
+ 
     };
 
     const handleSubmit = (e) => {
-        console.log(formData);
         e.preventDefault();
         onSave(formData);
         closeModal();
-        // setFormData({
-        //     name: '',
-        //     calculation: '',
-        //     image: null,
-        // });
+        setFormData({
+            name: '',
+            calculation: '',
+            image: null,
+
+        })
     };
 
     return (
         <Box>
-            <Dialog open={openModal} onClose={closeModal}>
+            <Dialog open={openModal} onClose={closeModal} maxWidth="sm" fullWidth>
                 <DialogTitle>Add New</DialogTitle>
                 <DialogContent>
                     <form onSubmit={handleSubmit}>
@@ -96,27 +96,28 @@ const AddTwoDModal = ({ openModal, closeModal, onSave }) => {
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            sx={{ marginBottom: "16px" }}
+                            sx={{ marginBottom: "16px", marginTop: "16px" }}
                         />
 
-
-                        
                         <FormControl fullWidth sx={{ marginBottom: "16px" }}>
-                            <InputLabel>Select Calculation</InputLabel>
+
                             <Select
                                 name="calculation"
                                 value={formData.calculation}
                                 onChange={handleChange}
+                                displayEmpty
+                                sx={{ minWidth: 120, marginTop: "16px" }}
                             >
+                                <MenuItem value="" disabled>
+                                    Select Calculation
+                                </MenuItem>
                                 {calculations.map((calculation) => (
-                                    <MenuItem key={calculation.id} value={calculation._id} >
+                                    <MenuItem key={calculation._id} value={calculation._id}>
                                         {calculation.name}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
-
-
                     </form>
                 </DialogContent>
                 <DialogActions>

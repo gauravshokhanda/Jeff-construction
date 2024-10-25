@@ -165,7 +165,8 @@ const InvoiceTable = () => {
             </TableContainer>
             
             <AddCalculationModal openModal={openModal} closeModal={handleCloseModal} onSave={handleSave} />
-            <EditCalculationModal openEditModal={OpenEditModal} 
+            <EditCalculationModal
+             openEditModal={OpenEditModal} 
             closeEditModal={handleCloseEditModal}
                 editData={editData}
             />
