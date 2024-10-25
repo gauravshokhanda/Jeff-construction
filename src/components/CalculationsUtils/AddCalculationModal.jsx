@@ -13,6 +13,7 @@ import CustomTextField from '../../layouts/dashboard/CustomComponent/CustomTextF
 const AddCalculationModal = ({ openModal, closeModal, onSave }) => {
     const [formData, setFormData] = useState({
         width: '',
+        name: '',
         length: '',
         area: '',
         labourCharge: '',
@@ -54,6 +55,13 @@ const AddCalculationModal = ({ openModal, closeModal, onSave }) => {
                 <DialogTitle>Add Calculation Details</DialogTitle>
                 <DialogContent>
                     <form onSubmit={handleSubmit}>
+                        <CustomTextField
+                            label="Name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                        />
                         <CustomTextField
                             label="Width"
                             name="width"
@@ -123,9 +131,9 @@ const AddCalculationModal = ({ openModal, closeModal, onSave }) => {
     );
 };
 AddCalculationModal.propTypes = {
-    openModal: PropTypes.bool.isRequired,  // expects a boolean
-    closeModal: PropTypes.func.isRequired, // expects a function
-    onSave: PropTypes.func.isRequired,     // expects a function
+    openModal: PropTypes.bool.isRequired, 
+    closeModal: PropTypes.func.isRequired, 
+    onSave: PropTypes.func.isRequired,     
 };
 
 export default AddCalculationModal;

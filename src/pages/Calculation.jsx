@@ -26,6 +26,7 @@ const InvoiceTable = () => {
                         'Content-Type': 'application/json'
                     }
                 });
+                console.log(response.data)
                 setGetData(response.data)    
             } catch (error) {
                 console.error('Error fetching the data:', error);
@@ -112,10 +113,10 @@ const InvoiceTable = () => {
             <TableContainer>
                 <Table>
                     <TableHead>
-                        <TableRow>
+                        <TableRow >
                             <TableCell><Checkbox /></TableCell>
                             <TableCell>S.No.</TableCell>
-                         
+                            <TableCell>Name</TableCell>
                             <TableCell>Width</TableCell>
                             <TableCell>Length</TableCell>
                             <TableCell>Area</TableCell>
@@ -135,6 +136,7 @@ const InvoiceTable = () => {
                                 <TableRow key={index}>
                                     <TableCell><Checkbox /></TableCell>
                                     <TableCell>{index + 1}</TableCell> 
+                                    <TableCell>{item.name}</TableCell> 
                                     <TableCell>{item.width}</TableCell>
                                     <TableCell>{item.length}</TableCell>
                                     <TableCell>{item.area}</TableCell>

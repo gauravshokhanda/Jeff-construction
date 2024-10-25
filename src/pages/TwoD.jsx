@@ -1,185 +1,76 @@
-import React, { useState } from "react";
+import React, {useState } from 'react';
+import axios from 'axios';
 import {
-    Box,
-    Button,
-    TextField,
-    Typography,
-} from "@mui/material";
+    Table,  TableCell, TableContainer, TableHead, TableRow, Checkbox,
+    Button, TextField, Box,
+} from '@mui/material';
+import AddCalculationModal from '../components/TwoDUtils/AddTwoDModal';
 
-const TwoDPropertyForm = () => {
-    const [formData, setFormData] = useState({
-        width: "",
-        length: "",
-        area: "",
-        laborCharge: "",
-        amenities: {
-            clubHouse: "",
-            garden: "",
-            swimmingPool: "",
-            carParking: "",
-            gym: "",
-        },
-        image: null,
-    });
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+const TwoD = () => {
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpenModal = () => {
+        setOpenModal(true);
     };
 
-    const handleAmenityChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            amenities: {
-                ...prevData.amenities,
-                [name]: value,
-            },
-        }));
+    const handleCloseModal = () => {
+        setOpenModal(false);
     };
 
-    const handleImageUpload = (e) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            image: e.target.files[0],
-        }));
+    const handleSave = async (formData) => {
+        try {
+            const response = await axios.post('http://3.111.47.151:5000/api/2d-images', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.status === 201) {
+                console.log('Calculation added successfully:', response.data);
+               
+            }
+        } catch (error) {
+            console.error('Error saving calculation:', error);
+        }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission (e.g., send to backend API)
-        console.log(formData);
-    };
 
     return (
-        <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ maxWidth: "600px", margin: "0 auto", padding: "16px" }}
-        >
-            <Typography variant="h5" gutterBottom>
-                Property Details Form in 2D
-            </Typography>
-
-            {/* Image Upload */}
-            <Button variant="outlined" component="label" sx={{ marginBottom: "16px" }}>
-                Upload Image
-                <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={handleImageUpload}
-                />
-            </Button>
-            {formData.image && (
-                <Typography variant="body2">
-                    Selected File: {formData.image.name}
-                </Typography>
-            )}
-
-            {/* Width */}
-            <TextField
-                fullWidth
-                label="Width"
-                name="width"
-                value={formData.width}
-                onChange={handleInputChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            {/* Length */}
-            <TextField
-                fullWidth
-                label="Length"
-                name="length"
-                value={formData.length}
-                onChange={handleInputChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            {/* Area */}
-            <TextField
-                fullWidth
-                label="Area"
-                name="area"
-                value={formData.area}
-                onChange={handleInputChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            {/* Labour Charge */}
-            <TextField
-                fullWidth
-                label="Labour Charge"
-                name="laborCharge"
-                value={formData.laborCharge}
-                onChange={handleInputChange}
-                sx={{ marginBottom: "16px" }}
-            />
+        <Box sx={{ padding: 2 }}>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+            }}>
 
 
-            <TextField
-                fullWidth
-                label="Club House"
-                name="clubHouse"
-                value={formData.amenities.clubHouse}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            <TextField
-                fullWidth
-                label="Garden"
-                name="garden"
-                value={formData.amenities.garden}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            <TextField
-                fullWidth
-                label="Swimming Pool"
-                name="swimmingPool"
-                value={formData.amenities.swimmingPool}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            <TextField
-                fullWidth
-                label="Car Parking"
-                name="carParking"
-                value={formData.amenities.carParking}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            <TextField
-                fullWidth
-                label="Gym"
-                name="gym"
-                value={formData.amenities.gym}
-                onChange={handleAmenityChange}
-                sx={{ marginBottom: "16px" }}
-            />
-
-            {/* Submit Button */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: 2,
-                }}
-            >
-                <Button variant="contained" color="primary" type="submit">
-                    Submit
+                <Button variant="contained" color="primary" sx={{ marginBottom: 2 }} onClick={handleOpenModal}>
+                    Add
                 </Button>
+
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    size="small"
+                    sx={{ marginRight: 1 }}
+                />
             </Box>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow >
+                            <TableCell><Checkbox /></TableCell>
+                            <TableCell>S.No.</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Image</TableCell>
+                            <TableCell>Calculation</TableCell>
+                        </TableRow>
+                    </TableHead>
+                </Table>
+            </TableContainer>
+
+            <AddCalculationModal openModal={openModal} closeModal={handleCloseModal} onSave={handleSave} />
+
         </Box>
     );
 };
 
-export default TwoDPropertyForm;
+export default TwoD;
