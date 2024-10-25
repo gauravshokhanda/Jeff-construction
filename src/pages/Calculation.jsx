@@ -39,6 +39,7 @@ const InvoiceTable = () => {
 
     const deleteHandler = async (id) => {
         try {
+            // eslint-disable-next-line no-unused-vars
             const response = await axios.delete(`http://3.111.47.151:5000/api/calculations/${id}`, {
                 headers: {
                     'Content-Type': 'application/json'
