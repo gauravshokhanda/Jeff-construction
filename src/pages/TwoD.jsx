@@ -16,6 +16,9 @@ const TwoD = () => {
     const [openModal, setOpenModal] = useState(false);
     const [OpenEditModal, setOpenEditModal] = useState(false);
     const [editData, setEditData] = useState(null);
+    
+
+
     const handleOpenModal = () => {
         setOpenModal(true);
     };
@@ -23,6 +26,7 @@ const TwoD = () => {
     const handleCloseModal = () => {
         setOpenModal(false);
     };
+
 
     useEffect(() => {
         const handleCalculation = async () => {

@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { Stack, TextField, Button, Alert } from '@mui/material';
+import { Stack, TextField, Button, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from "../../../redux/Slices/authSlice";
 
 export default function SignUpForm() {
     const dispatch = useDispatch();
     const error = useSelector(state => state.auth.error); 
-
     const [formValues, setFormValues] = useState({
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
+        role: '', 
     });
 
     const [errors, setErrors] = useState({});
@@ -41,6 +41,9 @@ export default function SignUpForm() {
         } else if (formValues.password !== formValues.confirmPassword) {
             tempErrors.confirmPassword = 'Passwords do not match';
         }
+        if (!formValues.role) {
+            tempErrors.role = 'Role is required';
+        }
 
         setErrors(tempErrors);
         return Object.keys(tempErrors).length === 0; // If no errors, validation passed
@@ -63,6 +66,7 @@ export default function SignUpForm() {
                 name: formValues.name,
                 email: formValues.email,
                 password: formValues.password,
+                role: formValues.role,
             }));
 
            
@@ -71,6 +75,7 @@ export default function SignUpForm() {
                 email: '',
                 password: '',
                 confirmPassword: '',
+                role: '',
             });
             setErrors({});
         }
@@ -115,6 +120,20 @@ export default function SignUpForm() {
                     error={!!errors.confirmPassword}
                     helperText={errors.confirmPassword}
                 />
+
+                <FormControl fullWidth error={!!errors.role}>
+                    <InputLabel>Role</InputLabel>
+                    <Select
+                        name="role"
+                        value={formValues.role}
+                        onChange={handleChange}
+                        label="Role"
+                    >
+                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="contractor">Contractor</MenuItem>
+                    </Select>
+                    {errors.role && <p style={{ color: 'red', margin: 0 }}>{errors.role}</p>}
+                </FormControl>
 
                 <Button fullWidth size="large" type="submit" variant="contained">
                     Sign Up

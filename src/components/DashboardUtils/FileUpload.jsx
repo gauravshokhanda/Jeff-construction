@@ -1,22 +1,44 @@
 import React, { useState } from 'react';
 import { Box, Button, Card, CardContent, Typography, TextField } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import PropertyModal from "./PropertyModal"
 
 function TemplatePreviewer() {
     const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
 
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreview(reader.result);
+        };
+        if (selectedFile) {
+            reader.readAsDataURL(selectedFile);
+        } else {
+            setPreview(null); 
+        }
+    };
+
+    const handleOpenModal = () => {
+        setModalOpen(true); // Open the modal
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false); // Close the modal
     };
 
     return (
-        <Card sx={{ maxWidth: 400, margin: '0 auto', mt: 5, boxShadow: 3 }}>
+        <Card sx={{ maxWidth: 400, margin: '0 auto', boxShadow: 3 }}>
             <CardContent>
                 {/* Header */}
                 <Box display="flex" alignItems="center" mb={2}>
                     <UploadFileIcon sx={{ color: '#2C5CC5', fontSize: 30, mr: 1 }} />
                     <Typography variant="h6" color="primary">
-                        Framer Template Previewer
+                        Add Property
                     </Typography>
                 </Box>
 
@@ -35,8 +57,8 @@ function TemplatePreviewer() {
                         color: '#4a4a4a',
                     }}
                 >
-                    {file ? (
-                        <Typography>{file.name}</Typography>
+                    {preview ? (
+                        <img src={preview} alt="File Preview" style={{ width: '40%', height: 'auto', marginBottom: '10px' }} />
                     ) : (
                         <>
                             <UploadFileIcon sx={{ fontSize: 40, color: '#9e9e9e' }} />
@@ -52,26 +74,20 @@ function TemplatePreviewer() {
                     </Button>
                 </Box>
 
-                {/* Input Fields */}
+
                 <TextField
                     fullWidth
-                    label="Template title"
+                    label="Name"
                     variant="outlined"
                     margin="dense"
                     sx={{ mb: 2 }}
                 />
                 <TextField
                     fullWidth
-                    label="Your name"
+                    label="Calculation"
                     variant="outlined"
                     margin="dense"
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    fullWidth
-                    label="Price (incl. $)"
-                    variant="outlined"
-                    margin="dense"
+                    onClick={handleOpenModal}
                     sx={{ mb: 3 }}
                 />
 
@@ -86,9 +102,10 @@ function TemplatePreviewer() {
                         padding: 1,
                     }}
                 >
-                    Preview Template
+                    Add
                 </Button>
             </CardContent>
+            <PropertyModal open={modalOpen} onClose={handleCloseModal} />
         </Card>
     );
 }
