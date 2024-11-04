@@ -1,4 +1,5 @@
 import { Navigate, useRoutes } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
@@ -11,10 +12,15 @@ import TwoD from './pages/TwoD';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Calculation from "./pages/Calculation";
 import SignupPage from './pages/SignupPage';
+import Users from "./pages/admin/Users";
+import Contractors from "./pages/admin/Contractors";
+import EState from "./pages/admin/EState";
+import FloorPlan from "./pages/admin/FloorPlan";
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const routes = useRoutes([
     {
       path: '/',
@@ -22,19 +28,24 @@ export default function Router() {
     },
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: isAuthenticated ? <DashboardLayout /> : <Navigate to="/login" />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index:true },
+        { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
-        { path: 'TwoD', element: < TwoD /> },
-        { path:'Calulation',element:<Calculation/>},
+        { path: 'TwoD', element: <TwoD /> },
+        { path: 'Calculation', element: <Calculation /> },
         { path: 'ThreeD', element: <ThreeD /> },
+
+        { path: 'Users', element: <Users /> },
+        { path: 'contractors', element: <Contractors /> },
+        { path: 'floorplan', element: <FloorPlan /> },
+        { path: 'e-state', element: <EState /> },
       ],
     },
     {
       path: 'login',
-      element: <LoginPage />,
+      element: isAuthenticated ? <Navigate to="/dashboard/app" /> : <LoginPage />,
     },
     {
       path: 'signup',

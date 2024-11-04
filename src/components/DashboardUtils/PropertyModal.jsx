@@ -6,15 +6,17 @@ import {
     DialogActions,
     Button,
     TextField,
-    FormHelperText,
+    
 } from '@mui/material';
 
-function PropertyModal({ open, onClose }) {
+function PropertyModal({ open, onClose, onDimensionsSubmit }) {
     const [width, setWidth] = useState('');
     const [height, setHeight] = useState('');
 
     const handleSave = () => {
-
+        if (onDimensionsSubmit) {
+            onDimensionsSubmit(width, height); 
+        }
         console.log(`Width: ${width}, Height: ${height}`);
         onClose(); 
     };

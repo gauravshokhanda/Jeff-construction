@@ -131,6 +131,7 @@ export default function SignUpForm() {
                     >
                         <MenuItem value="user">User</MenuItem>
                         <MenuItem value="contractor">Contractor</MenuItem>
+                        <MenuItem value="admin">Admin</MenuItem>
                     </Select>
                     {errors.role && <p style={{ color: 'red', margin: 0 }}>{errors.role}</p>}
                 </FormControl>

@@ -7,7 +7,8 @@ function TemplatePreviewer() {
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
-
+    const [width, setWidth] = useState(null);
+    const [height, setHeight] = useState(null);
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
@@ -31,8 +32,13 @@ function TemplatePreviewer() {
         setModalOpen(false); // Close the modal
     };
 
+    const handleDimensionInput = (inputWidth, inputHeight) => {
+        setWidth(inputWidth);
+        setHeight(inputHeight);
+    };
+
     return (
-        <Card sx={{ maxWidth: 400, margin: '0 auto', boxShadow: 3 }}>
+        <Card sx={{ width: 400, margin: '0 auto', boxShadow: 3 }}>
             <CardContent>
                 {/* Header */}
                 <Box display="flex" alignItems="center" mb={2}>
@@ -82,14 +88,16 @@ function TemplatePreviewer() {
                     margin="dense"
                     sx={{ mb: 2 }}
                 />
-                <TextField
-                    fullWidth
-                    label="Calculation"
-                    variant="outlined"
-                    margin="dense"
-                    onClick={handleOpenModal}
-                    sx={{ mb: 3 }}
-                />
+                <Box display="flex" flexDirection={"row"} alignItems="center"  mb={2}>
+                    <Button onClick={handleOpenModal} variant="outlined">
+                        Calculation
+                    </Button>
+                    {width !== null && height !== null && (
+                        <Typography variant="body2" color="textSecondary" sx={{pl:1 }}>
+                            Width: {width}, Height: {height}
+                        </Typography>
+                    )}
+                </Box>
 
                 {/* Preview Button */}
                 <Button
@@ -105,7 +113,7 @@ function TemplatePreviewer() {
                     Add
                 </Button>
             </CardContent>
-            <PropertyModal open={modalOpen} onClose={handleCloseModal} />
+            <PropertyModal open={modalOpen} onClose={handleCloseModal} onDimensionsSubmit={handleDimensionInput} />
         </Card>
     );
 }

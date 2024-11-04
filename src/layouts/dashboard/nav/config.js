@@ -1,9 +1,5 @@
-// import SvgColor from '../../../components/svg-color';
-
-
-// const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />;
-
-const navConfig = [
+// 
+const contractorNavConfig = [
   {
     title: 'Search Address',
     path: '/dashboard/app',
@@ -15,24 +11,48 @@ const navConfig = [
     // icon: icon('ic_user'),
   },
   {
-    title: '2d ',
+    title: '2D',
     path: '/dashboard/TwoD',
     // icon: icon('ic_cart'),
   },
   {
-    title: '3d',
+    title: '3D',
     path: '/dashboard/ThreeD',
-    // icon: icon('ic_blog'),
-  },
-  {
-    title: 'Calulation',
-    path:"/dashboard/calulation"
-  },
-  {
-    title: 'Login',
-    path: '/login',
-    // icon: icon('ic_lock'),
   },
 ];
+
+const adminRoleNavConfig = [
+  {
+    title: 'Users',
+    path: '/dashboard/Users',
+  },
+  {
+    title:'contractors',
+    path:'/dashboard/contractors',
+  },
+  {
+    title:'floorplan',
+    path:'/dashboard/floorplan',
+  },
+  {
+    title:'e-state',
+    path:'/dashboard/e-state',
+  },
+  {
+    title: 'Calculation',
+    path: '/dashboard/Calculation',
+  },
+];
+
+const navConfig = (userRole) => {
+  if (userRole === 'admin') {
+    return adminRoleNavConfig;
+  }
+
+  if (userRole === 'contractor') {
+    return contractorNavConfig;
+  }
+  return [];
+};
 
 export default navConfig;

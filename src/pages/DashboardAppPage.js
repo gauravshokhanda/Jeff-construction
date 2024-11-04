@@ -145,7 +145,7 @@ export default function DashboardAppPage() {
 
 
           {showCoordinatesForm && <CoordinatesForm setShowCoordinatesForm={setShowCoordinatesForm} />}
-          <Box display="flex" gap={2} mt={3} >
+          <Box display="flex" gap={1} mt={3} >
             <Box width="70%">
 
           <LoadScript googleMapsApiKey="AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w" libraries={libraries}>
