@@ -1,22 +1,50 @@
 import React, { useState } from 'react';
 import { Box, Button, Card, CardContent, Typography, TextField } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import PropertyModal from "./PropertyModal"
 
 function TemplatePreviewer() {
     const [file, setFile] = useState(null);
-
+    const [preview, setPreview] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [width, setWidth] = useState(null);
+    const [height, setHeight] = useState(null);
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreview(reader.result);
+        };
+        if (selectedFile) {
+            reader.readAsDataURL(selectedFile);
+        } else {
+            setPreview(null); 
+        }
+    };
+
+    const handleOpenModal = () => {
+        setModalOpen(true); // Open the modal
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false); // Close the modal
+    };
+
+    const handleDimensionInput = (inputWidth, inputHeight) => {
+        setWidth(inputWidth);
+        setHeight(inputHeight);
     };
 
     return (
-        <Card sx={{ maxWidth: 400, margin: '0 auto', mt: 5, boxShadow: 3 }}>
+        <Card sx={{ width: 400, margin: '0 auto', boxShadow: 3 }}>
             <CardContent>
                 {/* Header */}
                 <Box display="flex" alignItems="center" mb={2}>
                     <UploadFileIcon sx={{ color: '#2C5CC5', fontSize: 30, mr: 1 }} />
                     <Typography variant="h6" color="primary">
-                        Framer Template Previewer
+                        Add Property
                     </Typography>
                 </Box>
 
@@ -35,8 +63,8 @@ function TemplatePreviewer() {
                         color: '#4a4a4a',
                     }}
                 >
-                    {file ? (
-                        <Typography>{file.name}</Typography>
+                    {preview ? (
+                        <img src={preview} alt="File Preview" style={{ width: '40%', height: 'auto', marginBottom: '10px' }} />
                     ) : (
                         <>
                             <UploadFileIcon sx={{ fontSize: 40, color: '#9e9e9e' }} />
@@ -52,28 +80,24 @@ function TemplatePreviewer() {
                     </Button>
                 </Box>
 
-                {/* Input Fields */}
+
                 <TextField
                     fullWidth
-                    label="Template title"
+                    label="Name"
                     variant="outlined"
                     margin="dense"
                     sx={{ mb: 2 }}
                 />
-                <TextField
-                    fullWidth
-                    label="Your name"
-                    variant="outlined"
-                    margin="dense"
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    fullWidth
-                    label="Price (incl. $)"
-                    variant="outlined"
-                    margin="dense"
-                    sx={{ mb: 3 }}
-                />
+                <Box display="flex" flexDirection={"row"} alignItems="center"  mb={2}>
+                    <Button onClick={handleOpenModal} variant="outlined">
+                        Calculation
+                    </Button>
+                    {width !== null && height !== null && (
+                        <Typography variant="body2" color="textSecondary" sx={{pl:1 }}>
+                            Width: {width}, Height: {height}
+                        </Typography>
+                    )}
+                </Box>
 
                 {/* Preview Button */}
                 <Button
@@ -86,9 +110,10 @@ function TemplatePreviewer() {
                         padding: 1,
                     }}
                 >
-                    Preview Template
+                    Add
                 </Button>
             </CardContent>
+            <PropertyModal open={modalOpen} onClose={handleCloseModal} onDimensionsSubmit={handleDimensionInput} />
         </Card>
     );
 }

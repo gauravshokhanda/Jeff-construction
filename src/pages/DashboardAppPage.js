@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Container, Typography, IconButton } from '@mui/material';
+import { Container, Typography, IconButton, Box } from '@mui/material';
 import { GoogleMap, LoadScript, Marker, DrawingManager } from '@react-google-maps/api';
 import Searchbar from '../layouts/dashboard/header/Searchbar';
 import AreaCard from '../components/DashboardUtils/AreaCard';
 import CoordinatesForm from '../components/DashboardUtils/CoordinatesForm';
+import PropertyModal from "../components/DashboardUtils/PropertyModal";
+import FileUpload from "../components/DashboardUtils/FileUpload"
 
-const mapContainerStyle = { 
+const mapContainerStyle = {
   height: '500px',
   width: '100%',
 };
@@ -54,6 +56,14 @@ export default function DashboardAppPage() {
   const [area, setArea] = useState(null);
   const [isAreaCardVisible, setIsAreaCardVisible] = useState(false);
   const [showCoordinatesForm, setShowCoordinatesForm] = useState(false);
+  const [openAddPropertyModal, SetopenAddPropertyModal] = useState(false)
+
+  const handleOpenAddPropertyModal = () => {
+    SetopenAddPropertyModal(true);
+  };
+  const handleCloseAddPropertyModal = () => {
+    SetopenAddPropertyModal(false);
+  };
 
   const handleLocationSearch = (coordinates) => {
     setMapCenter({ lat: coordinates[0], lng: coordinates[1] });
@@ -104,7 +114,7 @@ export default function DashboardAppPage() {
           Search Location
         </Typography>
 
-        <Container maxWidth="xl" style={{ position: 'relative' }}>
+        <Container maxWidth="xl" style={{ position: 'relative', height: '100vh' }}>
           <Searchbar onLocationSearch={handleLocationSearch} />
 
           <IconButton onClick={handleMyLocationClick}>
@@ -132,9 +142,11 @@ export default function DashboardAppPage() {
             </svg>
           </IconButton>
 
-         
 
-          {showCoordinatesForm && <CoordinatesForm setShowCoordinatesForm={setShowCoordinatesForm}/>}
+
+          {showCoordinatesForm && <CoordinatesForm setShowCoordinatesForm={setShowCoordinatesForm} />}
+          <Box display="flex" gap={1} mt={3} >
+            <Box width="70%">
 
           <LoadScript googleMapsApiKey="AIzaSyDC1rdf12jCvTnZg1IeHBHWD1DRJhAhk8w" libraries={libraries}>
             <GoogleMap
@@ -142,11 +154,11 @@ export default function DashboardAppPage() {
               center={mapCenter}
               zoom={zoom}
               mapTypeId="satellite"
-              onLoad={onMapLoad} 
+              onLoad={onMapLoad}
             >
               <Marker position={mapCenter} />
 
-              {drawingPosition && ( 
+              {drawingPosition && (
                 <DrawingManager
                   options={{
                     drawingControl: true,
@@ -179,7 +191,7 @@ export default function DashboardAppPage() {
 
                     if (calculatedArea) {
                       setArea(calculatedArea);
-                      setIsAreaCardVisible(true); 
+                      setIsAreaCardVisible(true);
                     }
                   }}
                 />
@@ -187,8 +199,15 @@ export default function DashboardAppPage() {
             </GoogleMap>
           </LoadScript>
           {isAreaCardVisible && area && <AreaCard area={area} onClose={handleAreaCardClose} />}
+          </Box>
+            
+            <FileUpload/>
+          </Box>
+          <PropertyModal open={openAddPropertyModal} onClose={handleCloseAddPropertyModal} />
         </Container>
       </Container>
+      
+    
     </>
   );
 }
