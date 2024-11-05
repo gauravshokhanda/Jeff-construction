@@ -16,6 +16,7 @@ import Users from "./pages/admin/Users";
 import Contractors from "./pages/admin/Contractors";
 import EState from "./pages/admin/EState";
 import FloorPlan from "./pages/admin/FloorPlan";
+import Calculator from "./pages/Calculator";
 
 // ----------------------------------------------------------------------
 
@@ -36,6 +37,7 @@ export default function Router() {
         { path: 'TwoD', element: <TwoD /> },
         { path: 'Calculation', element: <Calculation /> },
         { path: 'ThreeD', element: <ThreeD /> },
+        { path: 'Calculator', element: <Calculator /> },
 
         { path: 'Users', element: <Users /> },
         { path: 'contractors', element: <Contractors /> },

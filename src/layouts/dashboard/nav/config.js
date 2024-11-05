@@ -19,6 +19,10 @@ const contractorNavConfig = [
     title: '3D',
     path: '/dashboard/ThreeD',
   },
+  {
+    title: 'Calculation',
+    path: '/dashboard/Calculation',
+  },
 ];
 
 const adminRoleNavConfig = [
@@ -38,11 +42,13 @@ const adminRoleNavConfig = [
     title:'e-state',
     path:'/dashboard/e-state',
   },
-  {
-    title: 'Calculation',
-    path: '/dashboard/Calculation',
-  },
 ];
+const userNavConfig=[
+  {
+    title: 'Calculator',
+    path: '/dashboard/Calculator',
+  },
+]
 
 const navConfig = (userRole) => {
   if (userRole === 'admin') {
@@ -51,6 +57,9 @@ const navConfig = (userRole) => {
 
   if (userRole === 'contractor') {
     return contractorNavConfig;
+  }
+  if (userRole === 'user') {
+    return userNavConfig;
   }
   return [];
 };

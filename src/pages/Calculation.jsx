@@ -1,183 +1,278 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import InfoIcon from '@mui/icons-material/Info';
 import {
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox,
-     IconButton, Button, TextField,  Box, 
-} from '@mui/material';
-// eslint-disable-next-line import/no-unresolved
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete'
+    Container,
+    TextField,
+    Typography,
+    Grid,
+    Paper,
+    Button,
+    Box,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    CircularProgress,
+    Card, CardContent, CardActions
+} from "@mui/material";
 
-import AddCalculationModal from '../components/CalculationsUtils/AddCalculationModal';
-import EditCalculationModal from '../components/CalculationsUtils/EditCalculationModal';
+const initialFormData = {
+    laborChargePerSqFt: '',
+    singleStoryCharge: '',
+    twoStoryCharge: '',
+    email: '',
+    phoneNumber: '',
+    profile: '',
+    companyName: '',
+    rates: {
+        homeDesignApproval: '',
+        excavation: '',
+        footingFoundation: '',
+        RCCWork: '',
+        roofSlab: '',
+        brickworkPlastering: '',
+        flooringTiling: '',
+        electricWiring: '',
+        waterSupplyPlumbing: '',
+        door: '',
+    },
+};
 
+const ContractorForm = () => {
+    const userId = useSelector(({ auth: { user } }) => user._id);
+    const [formData, setFormData] = useState(initialFormData);
+    const [open, setOpen] = useState(false);
+    const [modalData, setModalData] = useState([]);
+    const [modalLoading, setModalLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-const InvoiceTable = () => {
-    const [getData, setGetData] = useState([]);
-    const [deleteData, setDeleteData] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
-    const [OpenEditModal, setOpenEditModal] = useState(false);
-    const [editData, setEditData] = useState(null);
-
-
-    useEffect(()=>{
-        const handleCalculation = async () => {
-            try {
-                const response = await axios.get('http://3.111.47.151:5000/api/calculations/all',{
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                console.log(response.data)
-                setGetData(response.data)    
-            } catch (error) {
-                console.error('Error fetching the data:', error);
-            }
-        };
-        handleCalculation();
-    }, [deleteData, openModal, OpenEditModal])
-
-    const deleteHandler = async (id) => {
-        try {
-            // eslint-disable-next-line no-unused-vars
-            const response = await axios.delete(`http://3.111.47.151:5000/api/calculations/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            setDeleteData(true)
-        } catch (error) {
-            console.error('Error deleting the data:', error);
+    const handleInputChange = (e, field, isRate = false) => {
+        const value = e.target.value;
+        if (isRate) {
+            setFormData((prevData) => ({
+                ...prevData,
+                rates: {
+                    ...prevData.rates,
+                    [field]: value,
+                },
+            }));
+        } else {
+            setFormData((prevData) => ({
+                ...prevData,
+                [field]: value,
+            }));
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        setErrorMessage('');
 
-    const handleOpenModal = () => {
-        setOpenModal(true); 
+        try {
+            const dataToSubmit = { ...formData, userId };
+            const response = await axios.post("http://localhost:5000/api/costs/contractor", dataToSubmit);
+            console.log("Form Data Submitted:", response.data);
+            alert("Data submitted successfully!");
+            setFormData(initialFormData);
+        } catch (error) {
+            const message = error.response?.data?.message || "There was an error submitting the data.";
+            setErrorMessage(message);
+            console.error("Error submitting form data:", error);
+        }
+    };
+
+    const handleOpenModal = async () => {
+        setModalLoading(true);
+        setErrorMessage('');
+        try {
+            const response = await axios.get("http://localhost:5000/api/costs/contractor");
+            setModalData(response.data);
+            setOpen(true);
+        } catch (error) {
+            const message = error.response?.data?.message || "There was an error fetching the data.";
+            setErrorMessage(message);
+            console.error("Error fetching data:", error);
+        } finally {
+            setModalLoading(false);
+        }
     };
 
     const handleCloseModal = () => {
-        setOpenModal(false); 
+        setOpen(false);
+        setModalData([]);
     };
-
-    const handleOpenEditModal = async (id) => {
-        
-        try {
-            const response = await axios.get(`http://3.111.47.151:5000/api/calculations/${id}`); 
-            setOpenEditModal(true);
-            setEditData(response.data)
-        } catch (error) {
-            console.error('Error fetching the data for editing:', error);
-        }
-    };
-
-    const handleCloseEditModal = () => {
-        setOpenEditModal(false);
-    };
-
-
-
-    const handleSave = async (formData) => {
-        try {
-            const response = await axios.post('http://3.111.47.151:5000/api/calculations/add', formData, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.status === 201) {
-                console.log('Calculation added successfully:', response.data);
-                setDeleteData((prev) => !prev);
-            }
-        } catch (error) {
-            console.error('Error saving calculation:', error);
-        }
-    };
-
 
     return (
-        <Box sx={{ padding: 2 }}>
-            <Box sx={{
-                display:'flex',
-                justifyContent: 'space-between',
-             }}>
+        <Container maxWidth="md">
+            <Paper
+                sx={{
+                    padding: "2rem",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                    borderRadius: "8px",
+                }}
+            >
+                <Box sx={{
+                    display: "flex", // Fixed typo here
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent:'space-between',
+                    paddingBottom:"10px",
+                }}>
+                    <Typography variant="h4">
+                        Contractor Details
+                    </Typography>
+                    <Typography variant="h4" sx={{ marginLeft: "16px" }}> {/* Add margin for spacing if needed */}
+                        <InfoIcon onClick={handleOpenModal} />
+                    </Typography>
+                </Box>
+               
+                {errorMessage && (
+                    <Typography color="error" gutterBottom>
+                        {errorMessage}
+                    </Typography>
+                )}
+                <form onSubmit={handleSubmit}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Company Name"
+                                fullWidth
+                                value={formData.companyName}
+                                onChange={(e) => handleInputChange(e, "companyName")}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                label="Email"
+                                fullWidth
+                                value={formData.email}
+                                onChange={(e) => handleInputChange(e, "email")}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                label="Phone Number"
+                                fullWidth
+                                value={formData.phoneNumber}
+                                onChange={(e) => handleInputChange(e, "phoneNumber")}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Profile"
+                                fullWidth
+                                value={formData.profile}
+                                onChange={(e) => handleInputChange(e, "profile")}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                label="Labor Charge per Sq Ft"
+                                fullWidth
+                                type="number"
+                                value={formData.laborChargePerSqFt}
+                                onChange={(e) => handleInputChange(e, "laborChargePerSqFt")}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                label="Single Story Charge"
+                                fullWidth
+                                type="number"
+                                value={formData.singleStoryCharge}
+                                onChange={(e) => handleInputChange(e, "singleStoryCharge")}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                label="Two Story Charge"
+                                fullWidth
+                                type="number"
+                                value={formData.twoStoryCharge}
+                                onChange={(e) => handleInputChange(e, "twoStoryCharge")}
+                            />
+                        </Grid>
 
-            
-                <Button variant="contained" color="primary" sx={{ marginBottom: 2 }} onClick={handleOpenModal}>
-                Calculation
-            </Button>
+                        <Grid item xs={12}>
+                            <Typography variant="h6">Rates</Typography>
+                        </Grid>
+                        {Object.keys(formData.rates).map((rateKey) => (
+                            <Grid item xs={6} key={rateKey}>
+                                <TextField
+                                    label={rateKey
+                                        .replace(/([A-Z])/g, " $1")
+                                        .replace(/^./, (str) => str.toUpperCase())}
+                                    fullWidth
+                                    type="number"
+                                    value={formData.rates[rateKey]}
+                                    onChange={(e) => handleInputChange(e, rateKey, true)}
+                                />
+                            </Grid>
+                        ))}
 
-            <TextField
-                label="Search"
-                variant="outlined"
-                size="small"
-                sx={{ marginRight: 1 }}
-            />
-            </Box>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow >
-                            <TableCell><Checkbox /></TableCell>
-                            <TableCell>S.No.</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Width</TableCell>
-                            <TableCell>Length</TableCell>
-                            <TableCell>Area</TableCell>
-                            <TableCell>LabourCharge</TableCell>
-                            <TableCell>ClubhousePercentage</TableCell>
-                            <TableCell>GardenPercentage</TableCell>
-                            <TableCell>SwimmingPoolPercentage</TableCell>
-                            <TableCell>CarParkingPercentage</TableCell>
-                            <TableCell>GymPercentage</TableCell>
-                            <TableCell>Action</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                       
-                        {getData && getData.length > 0 ? (
-                            getData.map((item, index) => (
-                                <TableRow key={index}>
-                                    <TableCell><Checkbox /></TableCell>
-                                    <TableCell>{index + 1}</TableCell> 
-                                    <TableCell>{item.name}</TableCell> 
-                                    <TableCell>{item.width}</TableCell>
-                                    <TableCell>{item.length}</TableCell>
-                                    <TableCell>{item.area}</TableCell>
-                                    <TableCell>{item.labourCharge}</TableCell>
-                                    <TableCell>{item.clubhousePercentage}</TableCell>
-                                    <TableCell>{item.gardenPercentage}</TableCell>
-                                    <TableCell>{item.swimmingPoolPercentage}</TableCell>
-                                    <TableCell>{item.carParkingPercentage}</TableCell>
-                                    <TableCell>{item.gymPercentage}</TableCell>
-                                    <TableCell sx={{display:'flex'}}>
+                        <Grid item xs={12}>
+                            <Button variant="contained"
+                                color="primary"
+                                fullWidth
+                                type="submit">
+                                Submit
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </form>
+            </Paper>
 
-                                        <IconButton onClick={() => deleteHandler(item._id)}><DeleteIcon /></IconButton>
-                                        <IconButton onClick={() => handleOpenEditModal(item._id)}><EditIcon /></IconButton>
+            {/* Modal for showing contractor data */}
+            <Dialog open={open} onClose={handleCloseModal} fullWidth maxWidth="md">
+                <DialogTitle>Contractor Details</DialogTitle>
+                <DialogContent>
+                    {modalLoading ? (
+                        <CircularProgress />
+                    ) : modalData.length > 0 ? (
+                        <Box
+                            display="flex"
+                            flexDirection="row"
+                            flexWrap="wrap"
+                            justifyContent="space-between"
+                            gap={2} // Use gap for spacing between cards
+                        >
+                            {modalData.map((contractor) => (
+                                <Card key={contractor._id} sx={{ flex: "1 1 30%", marginBottom: 2 }}>
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom>{contractor.companyName}</Typography>
+                                        <Typography>Email: {contractor.email}</Typography>
+                                        <Typography>Phone Number: {contractor.phoneNumber}</Typography>
+                                        <Typography>Profile: {contractor.profile}</Typography>
+                                        <Typography>Labor Charge per Sq Ft: {contractor.laborChargePerSqFt}</Typography>
+                                        <Typography>Single Story Charge: {contractor.singleStoryCharge}</Typography>
+                                        <Typography>Two Story Charge: {contractor.twoStoryCharge}</Typography>
+                                        <Typography variant="h6" gutterBottom>Rates:</Typography>
+                                        {Object.entries(contractor.rates).map(([key, value]) => (
+                                            <Typography key={key}>
+                                                {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}: {value}
+                                            </Typography>
+                                        ))}
+                                    </CardContent>
+                                    <CardActions>
+                                        {/* You can add additional buttons or actions here if needed */}
+                                    </CardActions>
+                                </Card>
+                            ))}
+                        </Box>
+                    ) : (
+                        <Typography>No contractor data available.</Typography>
+                    )}
+                </DialogContent>
 
-                                        
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={11} align="center">
-                                    No data found
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            
-            <AddCalculationModal openModal={openModal} closeModal={handleCloseModal} onSave={handleSave} />
-            <EditCalculationModal
-             openEditModal={OpenEditModal} 
-            closeEditModal={handleCloseEditModal}
-                editData={editData}
-            />
-            
-        </Box>
+                <DialogActions>
+                    <Button onClick={handleCloseModal} color="primary">Close</Button>
+                </DialogActions>
+            </Dialog>
+        </Container>
     );
 };
 
-export default InvoiceTable;
+export default ContractorForm;
