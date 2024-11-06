@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Card, Box, Grid, Snackbar } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
-import ContractorsModal from './Modals/ContractorsModal '; // Import the modal component
+import { useNavigate } from 'react-router-dom'; 
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { setContractors } from "../../redux/Slices/contractorReducer"
+import ContractorCard from "./Card/ContractorCard"; // Make sure the path is correct
 
 const Alert = React.forwardRef((props, ref) => (
   <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -13,7 +16,8 @@ function MaterialEstimateForm() {
   const [contractorsWithCost, setContractorsWithCost] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [message, setMessage] = useState('');
-  const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate(); 
+  const dispatch = useDispatch();
 
   const fetchContractorsWithCost = async () => {
     try {
@@ -28,10 +32,12 @@ function MaterialEstimateForm() {
       }
 
       const data = await response.json();
+      dispatch(setContractors(data));
       setContractorsWithCost(data);
       setMessage('Contractor costs fetched successfully!');
-      setOpenSnackbar(true); // Show success message
-      setOpenModal(true); // Open modal with contractors' details
+
+      navigate('/dashboard/contractorCard');
+
     } catch (error) {
       setMessage(error.message);
       setOpenSnackbar(true); // Show error message
@@ -40,10 +46,6 @@ function MaterialEstimateForm() {
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
   };
 
   return (
@@ -92,13 +94,6 @@ function MaterialEstimateForm() {
           {message}
         </Alert>
       </Snackbar>
-
-      {/* Contractors Modal */}
-      <ContractorsModal
-        open={openModal}
-        onClose={handleCloseModal}
-        contractors={contractorsWithCost}
-      />
     </Card>
   );
 }

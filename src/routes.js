@@ -17,32 +17,46 @@ import Contractors from "./pages/admin/Contractors";
 import EState from "./pages/admin/EState";
 import FloorPlan from "./pages/admin/FloorPlan";
 import Calculator from "./pages/Calculator";
+import ContractorCard from './components/ConstructionCalculatorUtils/Card/ContractorCard';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const userRole = useSelector((state) => state.auth.user?.role); // Safe check for user object
+  console.log("userRole", userRole);
+
+  const getDefaultRedirect = () => {
+    if (userRole === 'contractor') {
+      return '/dashboard/app'; // Redirect contractor to Search Address
+    }
+    if (userRole === 'user') {
+      return '/dashboard/Calculator'; // Redirect user to Calculator
+    }
+    return '/dashboard/Users'; // Redirect admin to Users page
+  };
+
   const routes = useRoutes([
     {
       path: '/',
-      element: <Navigate to="/login"  />, 
+      element: isAuthenticated ? <Navigate to={getDefaultRedirect()} /> : <Navigate to="/login" />,
     },
     {
       path: '/dashboard',
       element: isAuthenticated ? <DashboardLayout /> : <Navigate to="/login" />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to={getDefaultRedirect()} />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'TwoD', element: <TwoD /> },
         { path: 'Calculation', element: <Calculation /> },
         { path: 'ThreeD', element: <ThreeD /> },
         { path: 'Calculator', element: <Calculator /> },
-
         { path: 'Users', element: <Users /> },
         { path: 'contractors', element: <Contractors /> },
         { path: 'floorplan', element: <FloorPlan /> },
         { path: 'e-state', element: <EState /> },
+        { path: 'contractorCard', element: <ContractorCard /> },
       ],
     },
     {
@@ -56,7 +70,7 @@ export default function Router() {
     {
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />,  },
+        { element: <Navigate to="/dashboard/app" />, },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
@@ -69,3 +83,4 @@ export default function Router() {
 
   return routes;
 }
+
