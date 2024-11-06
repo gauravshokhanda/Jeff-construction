@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import InfoIcon from '@mui/icons-material/Info';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {
     Container,
     TextField,
@@ -12,7 +15,7 @@ import {
     Box,
     CircularProgress,
     Card, CardContent, CardActions,
-    Dialog, DialogTitle, DialogContent, DialogActions,
+    Dialog, DialogTitle, DialogContent, DialogActions, Avatar
 } from "@mui/material";
 
 const initialFormData = {
@@ -113,89 +116,99 @@ const ContractorForm = () => {
             {loading ? (
                 <CircularProgress />
             ) : contractors.length > 0 ? (
-                <Box display="flex" flexDirection="row" flexWrap="wrap" gap={2}>
-                    {contractors.map((contractor) => (
-                        <Card
-                            key={contractor._id}
-                            sx={{
-                                flex: "1 1 30%",
-                                marginBottom: 4,
-                                boxShadow: 3,
-                                borderRadius: 2,
-                                bgcolor: "#f5f5f5", // Light background color
-                                padding: 2
-                            }}
-                        >
-                            <CardContent>
-                                {/* Company Name */}
-                                <Typography
-                                    variant="h5"
-                                    gutterBottom
-                                    sx={{
-                                        fontWeight: "bold",
-                                        color: "#1976d2", // Primary color
-                                        marginBottom: 1
-                                    }}
-                                >
-                                    {contractor.companyName}
-                                </Typography>
-
-                                {/* Email with bold label */}
-                                <Typography sx={{ display: "flex", marginBottom: 1 }}>
-                                    <Typography component="span" sx={{ fontWeight: 'bold', marginRight: 1 }}>Email:</Typography>
-                                    {contractor.email}
-                                </Typography>
-
-                                {/* Phone Number */}
-                                <Typography sx={{ display: "flex", marginBottom: 1 }}>
-                                    <Typography component="span" sx={{ fontWeight: 'bold', marginRight: 1 }}>Phone Number:</Typography>
-                                    {contractor.phoneNumber}
-                                </Typography>
-
-                                {/* Profile */}
-                                <Typography sx={{ display: "flex", marginBottom: 1 }}>
-                                    <Typography component="span" sx={{ fontWeight: 'bold', marginRight: 1 }}>Profile:</Typography>
-                                    {contractor.profile}
-                                </Typography>
-
-                                {/* Labor Charges */}
-                                <Typography sx={{ display: "flex", marginBottom: 1 }}>
-                                    <Typography component="span" sx={{ fontWeight: 'bold', marginRight: 1 }}>Labor Charge per Sq Ft:</Typography>
-                                    {contractor.laborChargePerSqFt}
-                                </Typography>
-                                <Typography sx={{ display: "flex", marginBottom: 1 }}>
-                                    <Typography component="span" sx={{ fontWeight: 'bold', marginRight: 1 }}>Single Story Charge:</Typography>
-                                    {contractor.singleStoryCharge}
-                                </Typography>
-                                <Typography sx={{ display: "flex", marginBottom: 1 }}>
-                                    <Typography component="span" sx={{ fontWeight: 'bold', marginRight: 1 }}>Two Story Charge:</Typography>
-                                    {contractor.twoStoryCharge}
-                                </Typography>
-
-                                {/* Rates Section */}
-                                <Typography variant="h6" gutterBottom sx={{ marginTop: 2, fontWeight: "bold", color: "#424242" }}>
-                                    Rates:
-                                </Typography>
-                                {contractor.rates
-                                    ? Object.entries(contractor.rates).map(([key, value]) => (
-                                        <Typography
-                                            key={key}
-                                            sx={{ marginLeft: 2, color: "#555" }}
-                                        >
-                                            {/* Displaying the key (label) in bold and value next to it */}
-                                            <Typography component="span" sx={{ fontWeight: 'bold' }}>
-                                                {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}:
-                                            </Typography>
-                                            {value}
+                    <Box display="flex" justifyContent="center" flexWrap="wrap" gap={3}>
+                        {contractors.map((contractor) => (
+                            <Card
+                                key={contractor._id}
+                                sx={{
+                                    width: "100%",
+                                    maxWidth: "350px",
+                                    paddingTop: 2,
+                                    boxShadow: "0 6px 15px rgba(0, 0, 0, 0.2)",
+                                    borderRadius: "15px",
+                                    transition: "transform 0.3s",
+                                    "&:hover": {
+                                        boxShadow: "0 12px 20px rgba(0, 0, 0, 0.3)",
+                                        transform: "scale(1.05)",
+                                    },
+                                    backgroundColor: "#f7f9fc",
+                                }}
+                            >
+                                <Box display="flex" justifyContent="center">
+                                    <Avatar sx={{ width: 80, height: 80, bgcolor: "#1976d2" }}>
+                                        {contractor.companyName.charAt(0).toUpperCase()}
+                                    </Avatar>
+                                </Box>
+                                <CardContent>
+                                    <Typography variant="h6" align="center" fontWeight="bold" color="#1976d2" gutterBottom>
+                                        {contractor.companyName}
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary" align="center" gutterBottom>
+                                        {contractor.profile}
+                                    </Typography>
+                                    <Box>
+                                        <Box display="flex" alignItems="center" mb={1}>
+                                            <EmailIcon sx={{ color: "#1976d2", mr: 1 }} />
+                                            <Typography variant="body2">{contractor.email}</Typography>
+                                        </Box>
+                                        <Box display="flex" alignItems="center" mb={1}>
+                                            <PhoneIcon sx={{ color: "#1976d2", mr: 1 }} />
+                                            <Typography variant="body2">{contractor.phoneNumber}</Typography>
+                                        </Box>
+                                    </Box>
+                                    <Box mt={2} borderTop="1px solid #e0e0e0" pt={2}>
+                                        <Typography variant="subtitle2" color="textSecondary" fontWeight="bold">
+                                            Charges:
                                         </Typography>
-                                    ))
-                                    : <Typography>No rates available</Typography>
-                                }
-                            </CardContent>
-                        </Card>
-
-                    ))}
-                </Box>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Labor Charge per Sq Ft: {contractor.laborChargePerSqFt}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Single Story Charge: {contractor.singleStoryCharge}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Two Story Charge: {contractor.twoStoryCharge}
+                                        </Typography>
+                                    </Box>
+                                    <Box mt={2} borderTop="1px solid #e0e0e0" pt={2}>
+                                        <Typography variant="subtitle2" color="textSecondary" fontWeight="bold">
+                                            Rates:
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Home Design Approval: {contractor.rates.homeDesignApproval}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Excavation: {contractor.rates.excavation}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Footing Foundation: {contractor.rates.footingFoundation}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            RCC Work: {contractor.rates.RCCWork}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Roof Slab: {contractor.rates.roofSlab}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Brickwork Plastering: {contractor.rates.brickworkPlastering}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Flooring Tiling: {contractor.rates.flooringTiling}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Electric Wiring: {contractor.rates.electricWiring}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Water Supply Plumbing: {contractor.rates.waterSupplyPlumbing}
+                                        </Typography>
+                                        <Typography variant="body2" color="textPrimary">
+                                            Door: {contractor.rates.door}
+                                        </Typography>
+                                    </Box>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </Box>
             ) : (
                 <Typography>No contractor data available.</Typography>
             )}
