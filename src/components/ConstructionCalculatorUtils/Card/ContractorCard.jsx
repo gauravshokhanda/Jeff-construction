@@ -1,7 +1,7 @@
 // src/ContractorCard.js
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Card, CardContent, Typography, Grid, Box, Avatar, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Box, Avatar, List, ListItem, ListItemText, Divider, CardActions, Button } from '@mui/material';
 
 const ContractorCard = () => {
     const contractors = useSelector((state) => state.contractor.contractors);
@@ -54,7 +54,7 @@ const ContractorCard = () => {
                                                 Total Cost: ₹{totalCost.toLocaleString()}
                                             </Typography>
                                         </Box>
-                                        <Divider sx={{ my: 2 }} />
+                                        {/* <Divider sx={{ my: 2 }} />
                                         <Typography variant="h6" align="center" color="text.primary" gutterBottom>
                                             Rates
                                         </Typography>
@@ -69,8 +69,12 @@ const ContractorCard = () => {
                                                     />
                                                 </ListItem>
                                             ))}
-                                        </List>
+                                        </List> */}
                                     </CardContent>
+                                    <CardActions sx={{ justifyContent: "center", mt: 2 }}>
+                                        <Button variant="outlined" size="small" color="primary">Choose</Button>
+                                        {/* <Button variant="contained" size="small" color="secondary">Delete</Button> */}
+                                    </CardActions>
                                 </Card>
                             </Grid>
                         );

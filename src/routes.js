@@ -23,8 +23,7 @@ import ContractorCard from './components/ConstructionCalculatorUtils/Card/Contra
 
 export default function Router() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const userRole = useSelector((state) => state.auth.user?.role); // Safe check for user object
-  console.log("userRole", userRole);
+  const userRole = useSelector((state) => state.auth.user?.role); 
 
   const getDefaultRedirect = () => {
     if (userRole === 'contractor') {

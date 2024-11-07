@@ -62,7 +62,7 @@ const ContractorForm = () => {
             }
         };
         fetchContractors();
-    }, [formData]);
+    }, []);
 
     const handleInputChange = (e, field, isRate = false) => {
         const value = e.target.value;
@@ -88,15 +88,18 @@ const ContractorForm = () => {
         try {
             const dataToSubmit = { ...formData, userId };
             const response = await axios.post("http://localhost:5000/api/costs/contractor", dataToSubmit);
-            alert("Data submitted successfully!");
-            setContractors((prev) => [...prev, response.data]);
-            setFormData(initialFormData);
-            setFormOpen(false);
+
+            // Update contractors state to include the new contractor
+            setContractors((prevContractors) => [...prevContractors, response.data.contractor]);
+            console.log(response.data.contractor)
+            setFormData(initialFormData); // Reset form data
+            setFormOpen(false); // Close the form modal
         } catch (error) {
             setErrorMessage(error.response?.data?.message || "There was an error submitting the data.");
             console.error("Error submitting form data:", error);
         }
     };
+
 
     const handleOpenForm = () => setFormOpen(true);
     const handleCloseForm = () => {

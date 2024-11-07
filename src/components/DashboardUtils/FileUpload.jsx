@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Box, Button, Card, CardContent, Typography, TextField } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import PropertyModal from "./PropertyModal"
+import axios from 'axios';
 
 function TemplatePreviewer() {
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [width, setWidth] = useState(null);
-    const [height, setHeight] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [name, setName] = useState('');  // Property name
+    const [area, setArea] = useState('');  // Property area
+    const [propertyId, setPropertyId] = useState(null); // ID of the added property
+
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         setFile(selectedFile);
@@ -20,21 +22,51 @@ function TemplatePreviewer() {
         if (selectedFile) {
             reader.readAsDataURL(selectedFile);
         } else {
-            setPreview(null); 
+            setPreview(null);
         }
     };
 
-    const handleOpenModal = () => {
-        setModalOpen(true); // Open the modal
-    };
+    const handleFormSubmit = async () => {
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('area', area);
+        if (file) {
+            formData.append('thumbnail', file);
+        }
 
-    const handleCloseModal = () => {
-        setModalOpen(false); // Close the modal
-    };
+        try {
+            let response;
+            if (isEditing) {
+                // Update existing property
+                console.log("editing id", propertyId)
+                response = await axios.put(`http://localhost:5000/api/properties/${propertyId}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            } else {
+                response = await axios.post('http://localhost:5000/api/properties/create', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+              
+            }
 
-    const handleDimensionInput = (inputWidth, inputHeight) => {
-        setWidth(inputWidth);
-        setHeight(inputHeight);
+            if (response.data.success) {
+                alert(isEditing ? 'Property updated successfully!' : 'Property added successfully!');
+
+                console.log("propertyId", response.data.data._id)
+                setPropertyId(response.data.data._id);
+                // After adding, switch to edit mode
+                if (!isEditing) {
+                    setIsEditing(true);
+                }
+            }
+        } catch (error) {
+            console.error(`Error ${isEditing ? 'updating' : 'adding'} property:`, error);
+            alert(`Failed to ${isEditing ? 'update' : 'add'} property.`);
+        }
     };
 
     return (
@@ -44,7 +76,7 @@ function TemplatePreviewer() {
                 <Box display="flex" alignItems="center" mb={2}>
                     <UploadFileIcon sx={{ color: '#2C5CC5', fontSize: 30, mr: 1 }} />
                     <Typography variant="h6" color="primary">
-                        Add Property
+                        {isEditing ? 'Edit Property' : 'Add Property'}
                     </Typography>
                 </Box>
 
@@ -81,25 +113,27 @@ function TemplatePreviewer() {
                 </Box>
 
 
+                {/* Text Fields */}
                 <TextField
                     fullWidth
                     label="Name"
                     variant="outlined"
                     margin="dense"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     sx={{ mb: 2 }}
                 />
-                <Box display="flex" flexDirection={"row"} alignItems="center"  mb={2}>
-                    <Button onClick={handleOpenModal} variant="outlined">
-                        Calculation
-                    </Button>
-                    {width !== null && height !== null && (
-                        <Typography variant="body2" color="textSecondary" sx={{pl:1 }}>
-                            Width: {width}, Height: {height}
-                        </Typography>
-                    )}
-                </Box>
+                <TextField
+                    fullWidth
+                    label="Area"
+                    variant="outlined"
+                    margin="dense"
+                    value={area}
+                    onChange={(e) => setArea(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
 
-                {/* Preview Button */}
+                {/* Submit Button */}
                 <Button
                     variant="contained"
                     color="primary"
@@ -108,12 +142,13 @@ function TemplatePreviewer() {
                         background: 'linear-gradient(90deg, #2C5CC5 0%, #3E92CC 100%)',
                         color: 'white',
                         padding: 1,
+                        mt: 2,
                     }}
+                    onClick={handleFormSubmit}
                 >
-                    Add
+                    {isEditing ? 'Update' : 'Add'}
                 </Button>
             </CardContent>
-            <PropertyModal open={modalOpen} onClose={handleCloseModal} onDimensionsSubmit={handleDimensionInput} />
         </Card>
     );
 }
